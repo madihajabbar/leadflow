@@ -26,7 +26,12 @@
       padding: 0;
     }
 
-    body {
+    body <form action="http://localhost:5678/webhook-test/leadflow" method="POST">
+    <input type="text" name="query" placeholder="Type something…" required>
+    <button type="submit">Send to Agent</button>
+  </form>
+
+    {
       font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg-gradient);
       color: #0f172a;
