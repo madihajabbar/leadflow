@@ -1,163 +1,781 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LeadFlow — AI Lead Generator</title>
+  <meta charset="UTF-8" />
+  <title>LeadFlow — AI-Powered Lead Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="LeadFlow is an AI-powered studio that generates hyper-targeted leads in any niche." />
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    :root {
+      --bg-gradient: radial-gradient(circle at top left, #ffe6f7 0, #f9f5ff 35%, #e2f2ff 70%, #fff 100%);
+      --accent: #111827;
+      --accent-soft: #e5edff;
+      --pill-bg: rgba(255,255,255,0.7);
+      --border-subtle: rgba(15,23,42,0.06);
+      --shadow-soft: 0 24px 60px rgba(15,23,42,0.08);
+      --radius-xl: 32px;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #ffe6ff, #e8f0ff, #fff7e5);
-      background-size: 300% 300%;
-      animation: gradientMove 12s ease infinite;
-      color: #111;
+      padding: 0;
     }
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    body <form action="http://localhost:5678/webhook-test/leadflow" method="POST">
+    <input type="text" name="query" placeholder="Type something…" required>
+    <button type="submit">Send to Agent</button>
+  </form>
+
+    {
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-gradient);
+      color: #0f172a;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .hero {
-      padding: 180px 40px 120px;
-      text-align: center;
-      max-width: 900px;
-      margin: auto;
-      animation: fadeIn 1.8s ease;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h1 {
-      font-size: 72px;
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      color: #111;
-    }
-
-    p {
-      font-size: 22px;
-      max-width: 650px;
+    .page {
+      max-width: 1120px;
       margin: 0 auto;
-      opacity: 0.7;
+      padding: 32px 20px 80px;
     }
 
-    .btn {
-      padding: 16px 32px;
-      margin-top: 40px;
-      font-size: 20px;
-      border-radius: 14px;
-      border: none;
-      background: #111;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
+    /* Floating pastel blobs (Creme-style) */
+    .blob {
+      position: fixed;
+      z-index: -1;
+      filter: blur(40px);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+    .blob-1 {
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: #ffd6e8;
+      top: -40px;
+      left: -40px;
+    }
+    .blob-2 {
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: #dbeafe;
+      top: 40%;
+      right: -80px;
+    }
+    .blob-3 {
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: #fef9c3;
+      bottom: -60px;
+      left: 10%;
     }
 
-    .btn:hover {
-      background: #333;
-    }
-
-    .floating {
-      width: 160px;
-      height: 160px;
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 40px;
-      position: absolute;
-      top: 10%;
-      right: 15%;
-      filter: blur(12px);
-      animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-30px); }
-      100% { transform: translateY(0px); }
-    }
-
-    .section {
-      padding: 150px 40px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .section h2 {
-      font-size: 48px;
+    /* Top nav */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 40px;
     }
 
-    .grid {
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #ffffff 0, #a5b4fc 35%, #f472b6 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(148,163,184,0.6);
+      font-size: 16px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+    }
+
+    .nav-links span {
+      opacity: 0.7;
+      cursor: pointer;
+    }
+
+    .nav-links span:hover {
+      opacity: 1;
+    }
+
+    .nav-cta {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.7);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-cta-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #4ade80;
+    }
+
+    /* Hero */
+    .hero {
+      margin-top: 16px;
+      margin-bottom: 72px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 30px;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.2fr);
+      gap: 32px;
+      align-items: center;
     }
 
-    .grid div {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-      font-size: 20px;
-      animation: fadeInUp 1.6s ease;
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
+    .hero-left-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      margin-bottom: 16px;
     }
 
-    footer {
-      text-align: center;
-      padding: 100px 30px;
-      font-size: 18px;
+    .hero-left-tag-pill {
+      background: #111827;
+      color: white;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .hero-title {
+      font-size: clamp(40px, 5vw, 54px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+    }
+
+    .hero-title span.bubble {
+      background: #fef9c3;
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 0.6em;
+      vertical-align: middle;
+      margin-left: 6px;
+      border: 1px solid rgba(250,204,21,0.4);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      max-width: 420px;
+      opacity: 0.8;
+      margin-bottom: 26px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .hero-btn-primary {
+      border-radius: 999px;
+      padding: 11px 20px;
+      background: #111827;
+      color: #f9fafb;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-btn-secondary {
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border-subtle);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .hero-footnote {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    /* Hero right — glass panel */
+    .hero-panel {
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 20px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+
+    .hero-panel-title {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .hero-panel-chip {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .hero-panel-input {
+      border-radius: 18px;
+      background: #f3f4f6;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .hero-panel-input span.prompt-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       opacity: 0.6;
+    }
+
+    .hero-panel-input span.prompt-text {
+      font-size: 12px;
+    }
+
+    .hero-panel-divider {
+      height: 1px;
+      background: rgba(148,163,184,0.3);
+      margin: 10px 0 12px;
+    }
+
+    .hero-panel-leads {
+      display: grid;
+      grid-template-columns: 1.5fr 1.5fr 1.2fr;
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .hero-panel-leads-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .hero-panel-lead-row {
+      display: contents;
+    }
+
+    .hero-panel-lead-cell {
+      padding: 7px 8px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid rgba(226,232,240,0.9);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hero-panel-badge {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      font-size: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(17,24,39,0.95);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-panel-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #4ade80;
+    }
+
+    /* Section wrapper + scroll reveal */
+    section {
+      margin: 80px 0;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* “Studios” grid (like case studies / scroll grid images) */
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .studio-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .studio-card {
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(226,232,240,0.8);
+      box-shadow: 0 16px 40px rgba(148,163,184,0.22);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .studio-tag {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+      width: fit-content;
+    }
+
+    .studio-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .studio-metric {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .studio-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .studio-bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      width: var(--value, 60%);
+    }
+
+    /* About / process “sliding section” */
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .split {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .about-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(226,232,240,0.9);
+      font-size: 11px;
+      margin-bottom: 12px;
+    }
+
+    .about-title {
+      font-size: 30px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .about-body {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .pill-item {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(255,255,255,0.8);
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #111827;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .step-text {
+      opacity: 0.85;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(148,163,184,0.3);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0.75;
     }
   </style>
 </head>
 
 <body>
+  <!-- Pastel floating blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 
-  <div class="floating"></div>
+  <div class="page">
+    <!-- NAV -->
+    <header class="nav">
+      <div class="nav-left">
+        <div class="logo-mark">L</div>
+        <div class="logo-text">LeadFlow Studio</div>
+      </div>
+      <div class="nav-links">
+        <span>Product</span>
+        <span>Studios</span>
+        <span>About</span>
+        <span>Pricing</span>
+        <button class="nav-cta">
+          <span class="nav-cta-dot"></span>
+          Book a call
+        </button>
+      </div>
+    </header>
 
-  <section class="hero">
-    <h1>Beautiful AI Lead Generation</h1>
-    <p>Turn any niche into 5 ready-to-contact leads with one click. Powered by your custom AI workflow.</p>
-    <button class="btn">Try It Now</button>
-  </section>
+    <!-- HERO -->
+    <main class="hero">
+      <div>
+        <div class="hero-left-tag">
+          <span class="hero-left-tag-pill">AI Lead Studio</span>
+          <span>Generate hyper-targeted leads in any niche.</span>
+        </div>
 
-  <section class="section">
-    <h2>How It Works</h2>
+        <h1 class="hero-title">
+          Turn vague markets into
+          <br />
+          <span>verified lead lists</span>
+          <span class="bubble">in seconds</span>
+        </h1>
 
-    <div class="grid">
-      <div>Enter any niche (fitness, real estate, dentists...)</div>
-      <div>Our AI agent generates verified business leads</div>
-      <div>View names, emails, and company details instantly</div>
-      <div>Paste your webhook to connect automations</div>
-    </div>
-  </section>
+        <p class="hero-sub">
+          LeadFlow plugs into your AI agent stack and n8n workflows to create
+          clean, ready-to-contact lead lists for agencies, founders, and solo operators.
+        </p>
 
-  <section class="section">
-    <h2>Why People Love LeadFlow</h2>
+        <div class="hero-cta-row">
+          <button class="hero-btn-primary">
+            Generate 5 free leads →
+          </button>
+          <button class="hero-btn-secondary">
+            Watch 2-minute demo
+          </button>
+        </div>
 
-    <div class="grid">
-      <div>⚡ Instant AI results</div>
-      <div>🎨 Clean minimalist design</div>
-      <div>📈 Helps agencies + freelancers</div>
-      <div>💰 100% free to use</div>
-    </div>
-  </section>
+        <p class="hero-footnote">
+          No credit card • Powered by free OpenRouter models • Built for scrappy deal hunters
+        </p>
+      </div>
 
-  <footer>
-    © 2025 LeadFlow — Built by Madiha Jabbar
-  </footer>
+      <aside class="hero-panel">
+        <div class="hero-panel-header">
+          <span class="hero-panel-title">Lead recipe preview</span>
+          <span class="hero-panel-chip">Niche: Fitness coaches</span>
+        </div>
 
+        <div class="hero-panel-input">
+          <div>
+            <span class="prompt-label">Prompt</span><br />
+            <span class="prompt-text">
+              “Give me 5 leads for online fitness coaches in North America looking for more clients…”
+            </span>
+          </div>
+        </div>
+
+        <div class="hero-panel-divider"></div>
+
+        <div class="hero-panel-leads-header">
+          <span>Name</span><span>Company</span><span>Email</span>
+        </div>
+
+        <div class="hero-panel-leads">
+          <div class="hero-panel-lead-cell">Sarah Thompson</div>
+          <div class="hero-panel-lead-cell">PeakForm Coaching</div>
+          <div class="hero-panel-lead-cell">sarah@peakform.co</div>
+
+          <div class="hero-panel-lead-cell">Miguel Rodriguez</div>
+          <div class="hero-panel-lead-cell">StrongMind Fit Lab</div>
+          <div class="hero-panel-lead-cell">miguel@strongmind.fit</div>
+
+          <div class="hero-panel-lead-cell">Aisha Khan</div>
+          <div class="hero-panel-lead-cell">FlowBody Studio</div>
+          <div class="hero-panel-lead-cell">aisha@flowbody.studio</div>
+        </div>
+
+        <div class="hero-panel-badge">
+          <span class="hero-panel-badge-dot"></span>
+          <span>Generated via AI workflow</span>
+        </div>
+      </aside>
+    </main>
+
+    <!-- STUDIOS / “WORK” GRID -->
+    <section id="studios">
+      <p class="section-label">Studios</p>
+      <h2 class="section-title">
+        Built for agencies, solo founders, and scrappy teams.
+      </h2>
+
+      <div class="studio-grid">
+        <article class="studio-card">
+          <span class="studio-tag">B2B SaaS</span>
+          <h3 class="studio-title">LinkedIn outbound studio</h3>
+          <p class="studio-metric">Fill your pipeline with ICP founders & growth leaders.</p>
+          <div class="studio-bar" style="--value: 82%;">
+            <div class="studio-bar-fill"></div>
+          </div>
+        </article>
+
+        <article class="studio-card">
+          <span class="studio-tag">Local services</span>
+          <h3 class="studio-title">Local business expansion</h3>
+          <p class="studio-metric">Generate owners of salons, gyms, clinics in any city.</p>
+          <div class="studio-bar" style="--value: 68%;">
+            <div class="studio-bar-fill"></div>
+          </div>
+        </article>
+
+        <article class="studio-card">
+          <span class="studio-tag">Creators & consultants</span>
+          <h3 class="studio-title">High-ticket client radar</h3>
+          <p class="studio-metric">Identify warm prospects for coaching, cohorts, or retainers.</p>
+          <div class="studio-bar" style="--value: 74%;">
+            <div class="studio-bar-fill"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ABOUT / PROCESS (SLIDING SECTION) -->
+    <section id="about">
+      <div class="split">
+        <div>
+          <div class="about-pill">
+            <span>About LeadFlow</span> · <span>Built on agents & n8n</span>
+          </div>
+          <h2 class="about-title">
+            Not another “lead list” scraper.<br />A controllable AI lead studio.
+          </h2>
+          <p class="about-body">
+            Instead of renting random lists, LeadFlow lets you own a reusable workflow:
+            describe your niche once, and your AI stack keeps generating fresh, contextual leads
+            every time you hit “run”.
+          </p>
+          <div class="pill-list">
+            <span class="pill-item">Free OpenRouter models</span>
+            <span class="pill-item">n8n-native workflows</span>
+            <span class="pill-item">One-click export</span>
+            <span class="pill-item">JSON, CSV, & Sheets</span>
+            <span class="pill-item">Cold email ready</span>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>Describe your niche.</strong>  
+              “Toronto med spas doing >$50k/month”, “ecom brands spending on TikTok ads”, or
+              “personal trainers selling online programs”.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>Run your LeadFlow workflow.</strong>  
+              Behind the scenes, your n8n + OpenRouter stack generates clean, structured JSON lead lists.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Export & outreach.</strong>  
+              Send leads into Sheets, Notion, or your CRM — then plug into your cold email / DM system.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA / FOOTER -->
+    <section id="cta">
+      <div class="hero-panel" style="margin-top: 20px;">
+        <div class="hero-panel-header">
+          <span class="hero-panel-title">Ready to plug in your first niche?</span>
+          <span class="hero-panel-chip">Start with 5 free leads</span>
+        </div>
+        <p style="font-size:13px; opacity:0.8; margin-bottom:12px;">
+          Send a single sentence about who you want as a customer. LeadFlow will turn it into a lead recipe your
+          workflow can run on repeat.
+        </p>
+        <button class="hero-btn-primary">
+          Get my first 5 leads →
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      <span>© LeadFlow Studio — Built by you, powered by free AI.</span>
+      <span>Made for agencies, solo founders, & scrappy operators.</span>
+    </footer>
+  </div>
+
+  <!-- Scroll reveal for sections -->
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.18 }
+    );
+
+    document.querySelectorAll("section").forEach((section) => {
+      observer.observe(section);
+    });
+  </script>
 </body>
 </html>
