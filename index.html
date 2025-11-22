@@ -708,8 +708,8 @@ window.addEventListener("DOMContentLoaded", () => {
   leadButtons.forEach(btn => {
     btn.addEventListener("click", async () => {
       const query = "Generate 5 leads for fitness coaches";
-
-      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev/run", {
+      
+      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query })
