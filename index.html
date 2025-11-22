@@ -516,14 +516,21 @@
           clean, ready-to-contact lead lists for agencies, founders, and solo operators.
         </p>
 
-        <div class="hero-cta-row">
-          <button class="hero-btn-primary">
-            Generate 5 free leads →
-          </button>
-          <button class="hero-btn-secondary">
-            Watch 2-minute demo
-          </button>
-        </div>
+<div class="hero-cta-row">
+  <button class="hero-btn-primary">
+    Generate 5 free leads →
+  </button>
+
+  <button class="hero-btn-secondary">
+    Watch 2-minute demo
+  </button>
+
+  <!-- NEW: cold email automation -->
+  <button class="hero-btn-secondary js-email-btn">
+    Draft my cold email ✉️
+  </button>
+</div>
+
 
         <p class="hero-footnote">
           No credit card • Powered by free OpenRouter models • Built for scrappy deal hunters
@@ -739,6 +746,41 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       alert("Leads updated!");
+    });
+  });
+});
+</script>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const emailButtons = document.querySelectorAll(".js-email-btn");
+
+  emailButtons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const query = prompt(
+        "Who do you want to email? (e.g. 'Toronto med spa owners', 'fitness coaches in LA')"
+      );
+
+      if (!query) return; // user cancelled
+
+      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "email", query })
+      });
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        console.error("Invalid JSON from Worker (email mode):", e);
+        alert("Worker error while generating email.");
+        return;
+      }
+
+      console.log("EMAIL DRAFTS:", data.emails || data);
+
+      alert("Cold email drafts generated! Open the console to see them.");
+      // Later we can show them nicely in the UI instead of console.
     });
   });
 });
