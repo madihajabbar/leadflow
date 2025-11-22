@@ -527,6 +527,9 @@
   </button>
 </div>
 
+<button class="hero-btn-secondary outreach-sequence-btn">
+  Draft my 7-day outreach sequence →
+</button>
 
         <p class="hero-footnote">
           No credit card • Powered by free OpenRouter models • Built for scrappy deal hunters
@@ -778,6 +781,35 @@ window.addEventListener("DOMContentLoaded", () => {
       alert("Cold email drafts generated! Open the console to see them.");
       // Later we can show them nicely in the UI instead of console.
     });
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const seqBtn = document.querySelector(".outreach-sequence-btn");
+
+  seqBtn.addEventListener("click", async () => {
+    const niche = prompt("Who are you trying to outreach to? (e.g., med spa owners in Toronto)");
+
+    if (!niche) return alert("Please enter a niche.");
+
+    try {
+      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev/outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ niche })
+      });
+
+      const data = await res.json();
+
+      console.log("OUTREACH SEQUENCE:", data);
+
+      alert("7-day sequence generated! Check console.");
+
+    } catch (err) {
+      console.error(err);
+      alert("Error generating sequence.");
+    }
   });
 });
 </script>
