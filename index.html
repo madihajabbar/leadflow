@@ -701,14 +701,13 @@
     });
   </script>
 <script>
-window.addEventListener("DOMContentLoaded", () => {
-  
-  const leadButtons = document.querySelectorAll(".hero-btn-primary");
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll(".hero-btn-primary");
 
-  leadButtons.forEach(btn => {
+  buttons.forEach(btn => {
     btn.addEventListener("click", async () => {
       const query = "Generate 5 leads for fitness coaches";
-      
+
       const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -720,15 +719,28 @@ window.addEventListener("DOMContentLoaded", () => {
         data = await res.json();
       } catch (e) {
         console.error("Invalid JSON from Worker:", e);
-        alert("Your Worker returned invalid JSON. Fix Worker code.");
+        alert("Your Worker returned invalid JSON");
         return;
       }
 
       console.log("LEADS:", data);
-      alert("Leads generated! Check console.");
+
+      // 🔥 REPLACE the preview UI with REAL data
+      const cells = document.querySelectorAll(".hero-panel-lead-cell");
+      const leads = data.leads;
+
+      for (let i = 0; i < cells.length; i++) {
+        const lead = leads[i] || { name: "-", company: "-", email: "-" };
+        const col = i % 3;
+
+        if (col === 0) cells[i].textContent = lead.name;
+        if (col === 1) cells[i].textContent = lead.company;
+        if (col === 2) cells[i].textContent = lead.email;
+      }
+
+      alert("Leads updated!");
     });
   });
-
 });
 </script>
 
