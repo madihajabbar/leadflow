@@ -702,7 +702,6 @@
   </script>
 <script>
 document.querySelector(".hero-btn-primary").addEventListener("click", async () => {
-  
   const query = "Generate 5 leads for fitness coaches";
 
   const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
@@ -716,7 +715,7 @@ document.querySelector(".hero-btn-primary").addEventListener("click", async () =
     data = await res.json();
   } catch (e) {
     console.error("Invalid JSON from Worker:", e);
-    alert("Your Worker returned invalid JSON.");
+    alert("Your Worker returned invalid JSON. Fix Worker code.");
     return;
   }
 
