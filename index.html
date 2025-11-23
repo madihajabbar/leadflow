@@ -761,7 +761,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (!query) return; // user cancelled
 
-      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev/run", {
+      const res = await fetch("http://localhost:5678/webhook/leadflow", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: "email", query })
@@ -794,7 +794,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!niche) return alert("Please enter a niche.");
 
     try {
-      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev/outreach", {
+      const res = await fetch("http://localhost:5678/webhook/leadflow", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ niche })
