@@ -761,7 +761,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (!query) return; // user cancelled
 
-      const res = await fetch("http://localhost:5678/webhook/leadflow", {
+      const res = await fetch("http://localhost:5678/webhook-test/leadflow-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: "email", query })
@@ -794,7 +794,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!niche) return alert("Please enter a niche.");
 
     try {
-      const res = await fetch("http://localhost:5678/webhook/leadflow", {
+      const res = await fetch("http://localhost:5678/webhook-test/leadflow-outreach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ niche })
