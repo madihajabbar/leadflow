@@ -557,199 +557,149 @@
     </main>
   </div>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("lead-form");
-    const input = document.getElementById("niche-input");
-    const statusEl = document.getElementById("lead-status");
-    const resultsEl = document.getElementById("lead-results");
-    const chipEl = document.getElementById("niche-chip");
-    const generateBtn = document.getElementById("generate-btn");
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("lead-form");
+  const input = document.getElementById("niche-input");
+  const statusEl = document.getElementById("lead-status");
+  const resultsEl = document.getElementById("lead-results");
+  const chipEl = document.getElementById("niche-chip");
+  const generateBtn = document.getElementById("generate-btn");
+  const exportBtn = document.getElementById("export-csv-btn");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  // GLOBAL ARRAY FOR EXPORT
+  window.lastLeads = [];
 
-      const niche = (input.value || "").trim();
-      if (!niche) {
-        alert("Tell LeadFlow who you want as a customer first.");
-        input.focus();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const niche = (input.value || "").trim();
+    if (!niche) {
+      alert("Tell LeadFlow who you want as a customer first.");
+      input.focus();
+      return;
+    }
+
+    statusEl.textContent = "Generating 5 leads from your Cloudflare Worker…";
+    generateBtn.disabled = true;
+    resultsEl.innerHTML = "";
+    exportBtn.style.display = "none";
+
+    try {
+      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "leads",
+          query: niche
+        })
+      });
+
+      const data = await res.json();
+      const leads = Array.isArray(data.leads) ? data.leads : [];
+
+      // SAVE LEADS FOR EXPORT
+      window.lastLeads = leads;
+
+      chipEl.textContent = niche;
+
+      if (!leads.length) {
+        statusEl.textContent = data.error || "No leads returned. Try tweaking your niche.";
         return;
       }
 
-      statusEl.textContent = "Generating 5 leads from your Cloudflare Worker…";
-      generateBtn.disabled = true;
-      resultsEl.innerHTML = "";
+      statusEl.textContent = `Showing ${leads.length} fictional leads for "${niche}".`;
 
-      try {
-        const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            mode: "leads",
-            query: niche
-          })
+      leads.forEach((lead, index) => {
+        const card = document.createElement("article");
+        card.className = "lead-card";
+
+        const safeName = lead.name || `Lead ${index + 1}`;
+        const safeCompany = lead.company || "Company TBD";
+        const safeEmail = lead.email || "no-email@example.com";
+        const safeIndustry = lead.industry || "General";
+        const safePain = lead.pain_point || "Looking for more predictable growth.";
+
+        card.innerHTML = `
+          <div class="lead-card-header">
+            <div class="lead-card-main">
+              <div class="lead-card-name">${safeName}</div>
+              <div class="lead-card-company">${safeCompany}</div>
+            </div>
+            <span class="lead-card-pill">${safeIndustry}</span>
+          </div>
+          <div class="lead-card-body">
+            ${safePain}
+          </div>
+          <div class="lead-card-footer">
+            <div class="lead-email">${safeEmail}</div>
+            <button type="button" class="copy-btn">Copy email</button>
+          </div>
+        `;
+
+        const copyBtn = card.querySelector(".copy-btn");
+        copyBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(safeEmail);
+            copyBtn.textContent = "Copied!";
+            copyBtn.classList.add("copied");
+            setTimeout(() => {
+              copyBtn.textContent = "Copy email";
+              copyBtn.classList.remove("copied");
+            }, 1500);
+          } catch {
+            alert("Could not copy. Please copy manually.");
+          }
         });
 
-        const data = await res.json();
-        const leads = Array.isArray(data.leads) ? data.leads : [];
-        lastLeads = leads;
-        document.getElementById("export-csv-btn").style.display = "inline-flex";
+        resultsEl.appendChild(card);
+      });
 
+      // ENABLE CSV BUTTON
+      exportBtn.style.display = "inline-flex";
 
-        chipEl.textContent = niche;
-        if (!leads.length) {
-          statusEl.textContent = data.error || "No leads returned. Try tweaking your niche.";
-          return;
-        }
-
-        statusEl.textContent = `Showing ${leads.length} fictional leads for "${niche}".`;
-
-        leads.forEach((lead, index) => {
-          const card = document.createElement("article");
-          card.className = "lead-card";
-
-          const safeName = lead.name || `Lead ${index + 1}`;
-          const safeCompany = lead.company || "Company TBD";
-          const safeEmail = lead.email || "no-email@example.com";
-          const safeIndustry = lead.industry || "General";
-          const safePain = lead.pain_point || "Looking for more predictable growth.";
-
-          card.innerHTML = `
-            <div class="lead-card-header">
-              <div class="lead-card-main">
-                <div class="lead-card-name">${safeName}</div>
-                <div class="lead-card-company">${safeCompany}</div>
-              </div>
-              <span class="lead-card-pill">${safeIndustry}</span>
-            </div>
-            <div class="lead-card-body">
-              ${safePain}
-            </div>
-            <div class="lead-card-footer">
-              <div class="lead-email">${safeEmail}</div>
-              <button type="button" class="copy-btn">Copy email</button>
-            </div>
-          `;
-
-          const copyBtn = card.querySelector(".copy-btn");
-          copyBtn.addEventListener("click", async () => {
-            try {
-              await navigator.clipboard.writeText(safeEmail);
-              copyBtn.textContent = "Copied!";
-              copyBtn.classList.add("copied");
-              setTimeout(() => {
-                copyBtn.textContent = "Copy email";
-                copyBtn.classList.remove("copied");
-              }, 1500);
-            } catch {
-              alert("Could not copy. Please copy it manually.");
-            }
-          });
-
-          resultsEl.appendChild(card);
-        });
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent = "Something went wrong. Check the console or try again.";
-      } finally {
-        // Enable CSV export
-document.getElementById("export-csv-btn")?.addEventListener("click", () => {
-  if (!lastLeads.length) return alert("No leads to export.");
-
-  const rows = [
-    ["Name", "Company", "Email", "Industry", "Pain Point"]
-  ];
-
-  lastLeads.forEach(lead => {
-    rows.push([
-      lead.name || "",
-      lead.company || "",
-      lead.email || "",
-      lead.industry || "",
-      lead.pain_point || ""
-    ]);
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "Something went wrong. Check the console or try again.";
+    } finally {
+      generateBtn.disabled = false;
+    }
   });
 
-  let csvContent = rows.map(r => r.join(",")).join("\n");
-  const blob = new Blob([csvContent], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
+  // EXPORT FUNCTION (FINAL + CLEAN)
+  exportBtn.addEventListener("click", () => {
+    const leads = window.lastLeads;
+    if (!leads || !leads.length) {
+      alert("No leads to export.");
+      return;
+    }
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "leads.csv";
-  a.click();
-});
+    const rows = [
+      ["Name", "Company", "Email", "Industry", "Pain Point"]
+    ];
 
-        generateBtn.disabled = false;
-        // CSV EXPORT FEATURE
-let lastLeads = [];
-
-document.getElementById("export-csv-btn").addEventListener("click", () => {
-  if (!lastLeads.length) return alert("No leads to export yet.");
-
-  const rows = [
-    ["Name", "Company", "Email", "Industry", "Pain Point"]
-  ];
-
-  lastLeads.forEach(lead => {
-    rows.push([
-      lead.name || "",
-      lead.company || "",
-      lead.email || "",
-      lead.industry || "",
-      lead.pain_point || ""
-    ]);
-  });
-
-  const csvContent = rows.map(r => r.join(",")).join("\n");
-  const blob = new Blob([csvContent], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "leads.csv";
-  a.click();
-});
-
-      }
+    leads.forEach(lead => {
+      rows.push([
+        lead.name || "",
+        lead.company || "",
+        lead.email || "",
+        lead.industry || "",
+        lead.pain_point || ""
+      ]);
     });
+
+    const csv = rows.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "leads.csv";
+    a.click();
   });
 
-    function exportToCSV(leads, niche) {
-  if (!leads || leads.length === 0) {
-    alert("No leads to export yet.");
-    return;
-  }
+});
+</script>
 
-  const header = [
-    "Name",
-    "Company",
-    "Email",
-    "Industry",
-    "Pain Point"
-  ];
-
-  const rows = leads.map(lead => [
-    lead.name || "",
-    lead.company || "",
-    lead.email || "",
-    lead.industry || "",
-    lead.pain_point || ""
-  ]);
-
-  const csvContent =
-    "data:text/csv;charset=utf-8," +
-    [header, ...rows].map(e => e.join(",")).join("\n");
-
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `leadflow_${niche.replace(/\s+/g, "_")}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-  </script>
 </body>
 </html>
