@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LeadFlow — AI Outreach Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI-powered multi-channel outreach builder for agencies and founders." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+  :root {
+    --bg-gradient: radial-gradient(circle at top left, #ffe6f7 0, #f9f5ff 35%, #e2f2ff 70%, #fff 100%);
+    --accent: #111827;
+    --accent-soft: #e5edff;
+    --pill-bg: rgba(255,255,255,0.7);
+    --border-subtle: rgba(15,23,42,0.06);
+    --shadow-soft: 0 24px 60px rgba(15,23,42,0.08);
+    --radius-xl: 32px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: all 0.2s ease-out;
+  }
+
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg-gradient);
+    color: #0f172a;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* Pastel blobs */
+  .blob {
+    position: fixed;
+    z-index: -1;
+    filter: blur(40px);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .blob-1 { width: 260px; height: 260px; border-radius: 999px; background: #ffd6e8; top: -40px; left: -40px; }
+  .blob-2 { width: 260px; height: 260px; border-radius: 999px; background: #dbeafe; top: 40%; right: -80px; }
+  .blob-3 { width: 220px; height: 220px; border-radius: 999px; background: #fef9c3; bottom: -60px; left: 10%; }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .nav-left { display: flex; align-items: center; gap: 10px; }
+
+  .logo-mark {
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #ffffff 0, #a5b4fc 35%, #f472b6 80%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(148,163,184,0.6);
+    font-size: 16px; color: white; font-weight: 700;
+  }
+
+  .logo-text {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    font-size: 15px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 18px;
+    font-size: 14px;
+  }
+
+  .nav-links a {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover {
+    opacity: 1;
+  }
+
+  .nav-link-active {
+    opacity: 1 !important;
+    font-weight: 500;
+  }
+
+  .nav-cta {
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(15,23,42,0.08);
+    background: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-cta-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: #4ade80;
+  }
+
+  /* MAIN LAYOUT */
+  .tool-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+    margin-top: 8px;
+  }
+
+  .tool-header {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .hero-left-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--pill-bg);
+    border: 1px solid var(--border-subtle);
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .hero-left-tag-pill {
+    background: #111827; color: white;
+    border-radius: 999px;
+    padding: 2px 8px; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .hero-title {
+    font-size: clamp(32px, 4vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+  }
+
+  .hero-title span.highlight {
+    background: #fef9c3;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.7em;
+    margin-left: 4px;
+    border: 1px solid rgba(250,204,21,0.4);
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    max-width: 460px;
+    margin: 0 auto;
+    opacity: 0.8;
+    margin-bottom: 10px;
+  }
+
+  .hero-footnote {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  /* Cards */
+  .card {
+    border-radius: 24px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow: var(--shadow-soft);
+    padding: 18px 18px 16px;
+  }
+
+  .card-header-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .card-chip {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-subtext {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+
+  /* Form */
+  .outreach-form-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 720px) {
+    .outreach-form-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .field-group {
+    margin-bottom: 10px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .field-label span.hint {
+    font-size: 11px;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  .input, .select {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 9px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+  }
+
+  .input:focus, .select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px rgba(79,70,229,0.1);
+  }
+
+  .textarea {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 9px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .textarea:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px rgba(79,70,229,0.1);
+  }
+
+  .hero-btn-primary {
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: #111827; color: #f9fafb;
+    border: none; font-size: 14px; font-weight: 500;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+    white-space: nowrap;
+  }
+
+  .hero-btn-primary:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    margin-top: 10px;
+  }
+
+  .pill-item {
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+  }
+
+  .pill-item:hover {
+    background: #eef2ff;
+  }
+
+  /* Results */
+  .results-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .results-status {
+    font-size: 11px;
+    opacity: 0.75;
+  }
+
+  .results-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .results-controls label {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+
+  .secondary-btn {
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 11px;
+    border: 1px solid rgba(148,163,184,0.7);
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+  }
+
+  .secondary-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .sequence-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .step-card {
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid rgba(226,232,240,0.9);
+    box-shadow: 0 12px 28px rgba(148,163,184,0.2);
+    padding: 10px 10px 9px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .step-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .step-day {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .step-channel {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+
+  .channel-pill {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.6);
+    background: #f9fafb;
+    white-space: nowrap;
+  }
+
+  .channel-email { border-color: #4f46e5; background: #eef2ff; color: #312e81; }
+  .channel-linkedin { border-color: #0ea5e9; background: #e0f2fe; color: #075985; }
+  .channel-instagram { border-color: #ec4899; background: #fce7f3; color: #9d174d; }
+  .channel-sms { border-color: #22c55e; background: #dcfce7; color: #14532d; }
+
+  .step-body-wrapper {
+    border-radius: 14px;
+    background: #f3f4f6;
+    padding: 7px 8px 6px;
+    font-size: 11px;
+  }
+
+  .step-subject {
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .step-body {
+    white-space: pre-wrap;
+    font-size: 11px;
+  }
+
+  .step-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .step-meta {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+
+  .copy-btn, .copy-all-btn {
+    border-radius: 999px;
+    border: none;
+    padding: 5px 10px;
+    font-size: 11px;
+    background: #111827;
+    color: #f9fafb;
+    cursor: pointer;
+  }
+
+  .copy-btn.copied,
+  .copy-all-btn.copied {
+    background: #22c55e;
+  }
+
+  .panel-badge {
+    margin-top: 10px;
+    font-size: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(17,24,39,0.95);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .panel-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #4ade80;
+  }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(148,163,184,0.3);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0.75;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="page">
+    <header class="nav">
+      <div class="nav-left">
+        <div class="logo-mark">L</div>
+        <div class="logo-text">LeadFlow Studio</div>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="leads.html">Leads</a>
+        <a href="email.html">Email Writer</a>
+        <a href="outreach.html" class="nav-link-active">Outreach</a>
+        <a href="automation.html">Automation</a>
+        <a href="pricing.html">Pricing</a>
+        <button class="nav-cta">
+          <span class="nav-cta-dot"></span>
+          Book a call
+        </button>
+      </div>
+    </header>
+
+    <main class="tool-main">
+      <!-- Intro -->
+      <section class="tool-header">
+        <div class="hero-left-tag">
+          <span class="hero-left-tag-pill">Outreach Tool</span>
+          <span>Design multi-channel outbound sequences in one click.</span>
+        </div>
+
+        <h1 class="hero-title">
+          AI outreach builder
+          <span class="highlight">for cold traffic</span>
+        </h1>
+
+        <p class="hero-sub">
+          Plug in your niche, offer, and goal — LeadFlow designs a full email + DM + SMS sequence in your chosen tone,
+          so you can sell and test outreach systems without touching real inboxes.
+        </p>
+
+        <p class="hero-footnote">
+          Use this to prototype outbound flows for clients before connecting real CRMs or sending tools.
+        </p>
+      </section>
+
+      <!-- Inputs card -->
+      <section class="card">
+        <div class="card-header-row">
+          <div class="card-title">Describe the campaign you want to run</div>
+        </div>
+        <p class="card-subtext">
+          LeadFlow will turn this into a day-by-day sequence across email, LinkedIn, Instagram, and SMS.
+        </p>
+
+        <form id="outreach-form">
+          <div class="outreach-form-grid">
+            <div>
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Niche / audience</span>
+                  <span class="hint">Who are you reaching out to?</span>
+                </div>
+                <input
+                  id="niche"
+                  class="input"
+                  type="text"
+                  placeholder="e.g. founders of AI SaaS tools doing $30k–$150k/mo"
+                />
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Your offer</span>
+                  <span class="hint">What are you selling?</span>
+                </div>
+                <input
+                  id="offer"
+                  class="input"
+                  type="text"
+                  placeholder="e.g. done-for-you outbound system that books sales calls"
+                />
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Main goal</span>
+                  <span class="hint">What does “success” mean?</span>
+                </div>
+                <input
+                  id="goal"
+                  class="input"
+                  type="text"
+                  placeholder="e.g. book 10–15 qualified demo calls per month"
+                />
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Extra context (optional)</span>
+                  <span class="hint">ICP details, constraints, channels, etc.</span>
+                </div>
+                <textarea
+                  id="extra"
+                  class="textarea"
+                  placeholder="e.g. they already get some traffic from LinkedIn, have small teams, hate spammy outreach, prefer short messages."
+                ></textarea>
+              </div>
+            </div>
+
+            <div>
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Sequence length</span>
+                  <span class="hint">Premium mode</span>
+                </div>
+                <select id="days" class="select">
+                  <option value="7" selected>7-day sequence</option>
+                  <option value="10">10-day sequence</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Tone</span>
+                  <span class="hint">How should it read?</span>
+                </div>
+                <select id="tone" class="select">
+                  <option value="Friendly">Friendly</option>
+                  <option value="Professional" selected>Professional</option>
+                  <option value="Bold">Bold</option>
+                  <option value="Humorous">Humorous</option>
+                  <option value="Luxury / High-end">Luxury / High-end</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Presets</span>
+                  <span class="hint">Click to autofill</span>
+                </div>
+                <div class="pill-list">
+                  <span
+                    class="pill-item"
+                    data-niche="Founders of B2B SaaS tools"
+                    data-offer="Done-for-you outbound system that books qualified demos"
+                    data-goal="Book 15–20 demo calls per month"
+                  >
+                    B2B SaaS demos
+                  </span>
+                  <span
+                    class="pill-item"
+                    data-niche="Local med spa owners in major cities"
+                    data-offer="Lead gen + reminder system to fill high-ticket facial packages"
+                    data-goal="Fill weekly treatment calendar with prepaid bookings"
+                  >
+                    Med spa bookings
+                  </span>
+                  <span
+                    class="pill-item"
+                    data-niche="Online fitness coaches selling high-ticket programs"
+                    data-offer="DM + email system that turns followers into sales calls"
+                    data-goal="Book 20+ sales calls from Instagram & email"
+                  >
+                    Online coaches
+                  </span>
+                </div>
+              </div>
+
+              <button type="submit" class="hero-btn-primary" id="generate-btn" style="margin-top: 4px;">
+                Generate outreach →
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Results card -->
+      <section class="card">
+        <div class="card-header-row">
+          <div class="card-title">Outreach sequence preview</div>
+          <div class="card-chip" id="chip-summary">No campaign yet</div>
+        </div>
+
+        <div class="results-top-row">
+          <p class="results-status" id="results-status">
+            Describe a campaign above and click “Generate outreach →”.
+          </p>
+          <div class="results-controls">
+            <button type="button" class="secondary-btn" id="regen-btn" disabled>
+              Regenerate →
+            </button>
+          </div>
+        </div>
+
+        <div class="sequence-list" id="sequence-results">
+          <!-- Steps injected here -->
+        </div>
+
+        <button type="button" class="copy-all-btn" id="copy-all-btn" style="margin-top: 8px; display:none;">
+          Copy full sequence
+        </button>
+
+        <div class="panel-badge">
+          <span class="panel-badge-dot"></span>
+          <span>Multi-channel flows, generated via your Cloudflare + OpenRouter stack.</span>
+        </div>
+      </section>
+
+      <footer>
+        <span>© LeadFlow Studio — Prototype outbound systems before you plug into real tools.</span>
+        <span>Use these flows as a “preview layer” for clients.</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("outreach-form");
+    const nicheInput = document.getElementById("niche");
+    const offerInput = document.getElementById("offer");
+    const goalInput = document.getElementById("goal");
+    const extraInput = document.getElementById("extra");
+    const daysSelect = document.getElementById("days");
+    const toneSelect = document.getElementById("tone");
+
+    const statusEl = document.getElementById("results-status");
+    const resultsEl = document.getElementById("sequence-results");
+    const chipSummaryEl = document.getElementById("chip-summary");
+    const generateBtn = document.getElementById("generate-btn");
+    const copyAllBtn = document.getElementById("copy-all-btn");
+    const regenBtn = document.getElementById("regen-btn");
+
+    const presetPills = document.querySelectorAll(".pill-item");
+
+    let lastPayload = null;
+    let lastSequence = [];
+
+    // Presets
+    presetPills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const niche = pill.getAttribute("data-niche") || "";
+        const offer = pill.getAttribute("data-offer") || "";
+        const goal = pill.getAttribute("data-goal") || "";
+        nicheInput.value = niche;
+        offerInput.value = offer;
+        goalInput.value = goal;
+      });
+    });
+
+    function channelClass(channel) {
+      const c = (channel || "").toString().toLowerCase();
+      if (c.includes("email")) return "channel-email";
+      if (c.includes("linkedin")) return "channel-linkedin";
+      if (c.includes("insta")) return "channel-instagram";
+      if (c.includes("sms") || c.includes("text")) return "channel-sms";
+      return "";
+    }
+
+    async function fetchSequence(payload) {
+      statusEl.textContent = "Designing your outreach sequence…";
+      generateBtn.disabled = true;
+      regenBtn.disabled = true;
+      copyAllBtn.style.display = "none";
+      resultsEl.innerHTML = "";
+
+      try {
+        const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        const sequence = Array.isArray(data.sequence) ? data.sequence : [];
+
+        lastSequence = sequence;
+
+        const days = payload.days || 7;
+        const tone = payload.tone || "Professional";
+        chipSummaryEl.textContent = `${days}-day • ${tone} tone`;
+
+        if (!sequence.length) {
+          statusEl.textContent = data.error || "No steps returned. Try adding more context.";
+          return;
+        }
+
+        statusEl.textContent = `Showing a ${days}-day, multi-channel sequence. Use this as a blueprint for your real tools.`;
+
+        let allText = "";
+
+        sequence.forEach((step, index) => {
+          const day = step.day || index + 1;
+          const channel = step.channel || "email";
+          const subject = step.subject || "";
+          const body = step.body || step.message || "";
+          const channelLabel = channel.charAt(0).toUpperCase() + channel.slice(1);
+
+          const card = document.createElement("article");
+          card.className = "step-card";
+
+          const header = document.createElement("div");
+          header.className = "step-header";
+
+          const main = document.createElement("div");
+          main.className = "step-main";
+
+          const dayEl = document.createElement("div");
+          dayEl.className = "step-day";
+          dayEl.textContent = `Day ${day}`;
+
+          const channelEl = document.createElement("div");
+          channelEl.className = "step-channel";
+          channelEl.textContent = channelLabel;
+
+          main.appendChild(dayEl);
+          main.appendChild(channelEl);
+
+          const pill = document.createElement("div");
+          pill.className = `channel-pill ${channelClass(channel)}`;
+          pill.textContent = channelLabel;
+
+          header.appendChild(main);
+          header.appendChild(pill);
+
+          const bodyWrapper = document.createElement("div");
+          bodyWrapper.className = "step-body-wrapper";
+
+          if (subject && channel.toLowerCase() === "email") {
+            const subjEl = document.createElement("div");
+            subjEl.className = "step-subject";
+            subjEl.textContent = `Subject: ${subject}`;
+            bodyWrapper.appendChild(subjEl);
+          }
+
+          const bodyEl = document.createElement("div");
+          bodyEl.className = "step-body";
+          bodyEl.textContent = body || "(no copy returned)";
+          bodyWrapper.appendChild(bodyEl);
+
+          const footer = document.createElement("div");
+          footer.className = "step-footer";
+
+          const meta = document.createElement("div");
+          meta.className = "step-meta";
+          meta.textContent = `${channelLabel} • Step ${index + 1}`;
+
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "copy-btn";
+          copyBtn.textContent = "Copy step";
+
+          copyBtn.addEventListener("click", async () => {
+            const lines = [
+              `Day ${day} — ${channelLabel}`,
+              subject && `Subject: ${subject}`,
+              "",
+              body,
+            ].filter(Boolean);
+
+            try {
+              await navigator.clipboard.writeText(lines.join("\n"));
+              copyBtn.textContent = "Copied!";
+              copyBtn.classList.add("copied");
+              setTimeout(() => {
+                copyBtn.textContent = "Copy step";
+                copyBtn.classList.remove("copied");
+              }, 1500);
+            } catch {
+              alert("Could not copy. Please copy manually.");
+            }
+          });
+
+          footer.appendChild(meta);
+          footer.appendChild(copyBtn);
+
+          card.appendChild(header);
+          card.appendChild(bodyWrapper);
+          card.appendChild(footer);
+
+          resultsEl.appendChild(card);
+
+          allText += [
+            `Day ${day} — ${channelLabel}`,
+            subject ? `Subject: ${subject}` : "",
+            "",
+            body,
+            "",
+          ].join("\n");
+        });
+
+        if (allText.trim().length > 0) {
+          copyAllBtn.style.display = "inline-flex";
+          copyAllBtn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(allText.trim());
+              copyAllBtn.textContent = "Copied sequence!";
+              copyAllBtn.classList.add("copied");
+              setTimeout(() => {
+                copyAllBtn.textContent = "Copy full sequence";
+                copyAllBtn.classList.remove("copied");
+              }, 1500);
+            } catch {
+              alert("Could not copy. Please copy manually.");
+            }
+          };
+        }
+
+        regenBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Something went wrong. Check your Worker or try again.";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const niche = (nicheInput.value || "").trim();
+      const offer = (offerInput.value || "").trim();
+      const goal = (goalInput.value || "").trim();
+      const extra = (extraInput.value || "").trim();
+      const days = parseInt(daysSelect.value, 10) || 7;
+      const tone = toneSelect.value || "Professional";
+
+      if (!niche || !offer) {
+        alert("Add at least a niche and an offer.");
+        if (!niche) nicheInput.focus();
+        else offerInput.focus();
+        return;
+      }
+
+      const parts = [
+        `Niche: ${niche}`,
+        `Offer: ${offer}`,
+        goal ? `Goal: ${goal}` : "",
+        extra ? `Extra context: ${extra}` : "",
+        `Tone: ${tone}`,
+        `Sequence length: ${days} days`,
+      ].filter(Boolean);
+
+      const payload = {
+        mode: "outreach",
+        query: parts.join(" | "),
+        days,
+        tone,
+      };
+
+      lastPayload = payload;
+      await fetchSequence(payload);
+    });
+
+    regenBtn.addEventListener("click", async () => {
+      if (!lastPayload) return;
+      await fetchSequence(lastPayload);
+    });
+  });
+  </script>
+</body>
+</html>
