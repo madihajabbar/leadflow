@@ -540,17 +540,13 @@
             <!-- Cards will be injected here -->
           </div>
           <button id="export-csv-btn" class="hero-btn-primary" style="margin-top: 12px; display:none;">
-            Download CSV
+            Export CSV
           </button>
 
           <div class="hero-panel-badge">
             <span class="hero-panel-badge-dot"></span>
             <span>Generated via your AI workflow</span>
           </div>
-
-          <button id="export-csv-btn" class="copy-all-btn" style="margin-top: 12px; display:none;">
-            Export CSV
-          </button>
         </aside>
       </section>
 
@@ -596,6 +592,9 @@
 
         const data = await res.json();
         const leads = Array.isArray(data.leads) ? data.leads : [];
+        lastLeads = leads;
+        document.getElementById("export-csv-btn").style.display = "inline-flex";
+
 
         chipEl.textContent = niche;
         if (!leads.length) {
@@ -682,6 +681,36 @@ document.getElementById("export-csv-btn")?.addEventListener("click", () => {
 });
 
         generateBtn.disabled = false;
+        // CSV EXPORT FEATURE
+let lastLeads = [];
+
+document.getElementById("export-csv-btn").addEventListener("click", () => {
+  if (!lastLeads.length) return alert("No leads to export yet.");
+
+  const rows = [
+    ["Name", "Company", "Email", "Industry", "Pain Point"]
+  ];
+
+  lastLeads.forEach(lead => {
+    rows.push([
+      lead.name || "",
+      lead.company || "",
+      lead.email || "",
+      lead.industry || "",
+      lead.pain_point || ""
+    ]);
+  });
+
+  const csvContent = rows.map(r => r.join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "leads.csv";
+  a.click();
+});
+
       }
     });
   });
