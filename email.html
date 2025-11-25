@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LeadFlow — AI Cold Email Writer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI-powered cold email writer for agencies, founders, and operators." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+  :root {
+    --bg-gradient: radial-gradient(circle at top left, #ffe6f7 0, #f9f5ff 35%, #e2f2ff 70%, #fff 100%);
+    --accent: #111827;
+    --accent-soft: #e5edff;
+    --pill-bg: rgba(255,255,255,0.7);
+    --border-subtle: rgba(15,23,42,0.06);
+    --shadow-soft: 0 24px 60px rgba(15,23,42,0.08);
+    --radius-xl: 32px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: all 0.25s ease-out;
+  }
+
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg-gradient);
+    color: #0f172a;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  .blob {
+    position: fixed;
+    z-index: -1;
+    filter: blur(40px);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .blob-1 { width: 260px; height: 260px; border-radius: 999px; background: #ffd6e8; top: -40px; left: -40px; }
+  .blob-2 { width: 260px; height: 260px; border-radius: 999px; background: #dbeafe; top: 40%; right: -80px; }
+  .blob-3 { width: 220px; height: 220px; border-radius: 999px; background: #fef9c3; bottom: -60px; left: 10%; }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .nav-left { display: flex; align-items: center; gap: 10px; }
+
+  .logo-mark {
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #ffffff 0, #a5b4fc 35%, #f472b6 80%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(148,163,184,0.6);
+    font-size: 16px; color: white; font-weight: 700;
+  }
+
+  .logo-text {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    font-size: 15px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 18px;
+    font-size: 14px;
+  }
+
+  .nav-links a {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover {
+    opacity: 1;
+  }
+
+  .nav-link-active {
+    opacity: 1 !important;
+    font-weight: 500;
+  }
+
+  .nav-cta {
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(15,23,42,0.08);
+    background: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-cta-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: #4ade80;
+  }
+
+  /* MAIN LAYOUT */
+  .tool-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .tool-header {
+    text-align: center;
+    max-width: 560px;
+  }
+
+  .hero-left-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--pill-bg);
+    border: 1px solid var(--border-subtle);
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .hero-left-tag-pill {
+    background: #111827; color: white;
+    border-radius: 999px;
+    padding: 2px 8px; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .hero-title {
+    font-size: clamp(32px, 4vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+  }
+
+  .hero-title span.highlight {
+    background: #fef9c3;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.7em;
+    margin-left: 4px;
+    border: 1px solid rgba(250,204,21,0.4);
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    max-width: 460px;
+    margin: 0 auto;
+    opacity: 0.8;
+    margin-bottom: 10px;
+  }
+
+  .hero-footnote {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .tool-layout {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.7fr);
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  @media (max-width: 860px) {
+    .tool-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .card {
+    border-radius: 24px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow: var(--shadow-soft);
+    padding: 18px 18px 16px;
+  }
+
+  .card h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 12px;
+  }
+
+  .field-group {
+    margin-bottom: 10px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .field-label span.hint {
+    font-size: 11px;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  .input {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 9px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+  }
+
+  .input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px rgba(79,70,229,0.1);
+  }
+
+  .textarea {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 9px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .textarea:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px rgba(79,70,229,0.1);
+  }
+
+  .select {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 8px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+  }
+
+  .hero-btn-primary {
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: #111827; color: #f9fafb;
+    border: none; font-size: 14px; font-weight: 500;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+    white-space: nowrap;
+  }
+
+  .hero-btn-primary:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    margin-top: 10px;
+  }
+
+  .pill-item {
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+  }
+
+  .pill-item:hover {
+    background: #eef2ff;
+  }
+
+  /* Results panel */
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .results-title {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .results-chip {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .results-status {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-bottom: 8px;
+  }
+
+  .email-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .email-card {
+    border-radius: 16px;
+    padding: 10px 10px 9px;
+    background: #f9fafb;
+    border: 1px solid rgba(226,232,240,0.9);
+    box-shadow: 0 10px 24px rgba(148,163,184,0.15);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .email-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .email-subject {
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .email-pill {
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4f46e5;
+    white-space: nowrap;
+  }
+
+  .email-body {
+    font-size: 11px;
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
+
+  .email-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .copy-btn, .copy-all-btn {
+    border-radius: 999px;
+    border: none;
+    padding: 5px 10px;
+    font-size: 11px;
+    background: #111827;
+    color: #f9fafb;
+    cursor: pointer;
+  }
+
+  .copy-btn.copied,
+  .copy-all-btn.copied {
+    background: #22c55e;
+  }
+
+  .panel-badge {
+    margin-top: 8px;
+    font-size: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(17,24,39,0.95);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .panel-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #4ade80;
+  }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(148,163,184,0.3);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0.75;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="page">
+    <header class="nav">
+      <div class="nav-left">
+        <div class="logo-mark">L</div>
+        <div class="logo-text">LeadFlow Studio</div>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="leads.html">Leads</a>
+        <a href="email.html" class="nav-link-active">Email Writer</a>
+        <a href="outreach.html">Outreach</a>
+        <a href="automation.html">Automation</a>
+        <a href="pricing.html">Pricing</a>
+        <button class="nav-cta">
+          <span class="nav-cta-dot"></span>
+          Book a call
+        </button>
+      </div>
+    </header>
+
+    <main class="tool-main">
+      <section class="tool-header">
+        <div class="hero-left-tag">
+          <span class="hero-left-tag-pill">Email Tool</span>
+          <span>Agency-grade cold emails in your voice, in seconds.</span>
+        </div>
+
+        <h1 class="hero-title">
+          AI cold email writer
+          <span class="highlight">for outbound that doesn’t suck</span>
+        </h1>
+
+        <p class="hero-sub">
+          Plug in who you’re targeting, what you offer, and how you want to sound —
+          LeadFlow generates ready-to-send cold emails you can paste into Gmail, Instantly, Smartlead, or anywhere.
+        </p>
+
+        <p class="hero-footnote">
+          Uses your Cloudflare Worker + OpenRouter under the hood. You keep control of the API key — no shared data.
+        </p>
+      </section>
+
+      <section class="tool-layout">
+        <!-- Left: Inputs -->
+        <article class="card">
+          <h2>Tell LeadFlow what to write</h2>
+          <p>Be specific — the more context you give, the better the emails will feel.</p>
+
+          <form id="email-form">
+            <div class="field-group">
+              <div class="field-label">
+                <span>Niche / Who you’re emailing</span>
+                <span class="hint">e.g. Toronto med spa owners</span>
+              </div>
+              <input
+                id="niche"
+                class="input"
+                type="text"
+                placeholder="e.g. 'founders of DTC skincare brands in the US'"
+              />
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">
+                <span>Your offer</span>
+                <span class="hint">What are you helping them with?</span>
+              </div>
+              <textarea
+                id="offer"
+                class="textarea"
+                placeholder="e.g. 'We build AI lead systems that book 10–20 extra calls per month without ad spend.'"
+              ></textarea>
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">
+                <span>Goal of the email</span>
+                <span class="hint">What should they do after reading?</span>
+              </div>
+              <input
+                id="goal"
+                class="input"
+                type="text"
+                placeholder="e.g. 'Book a 15-minute demo call' or 'Reply yes if they want a quick audit.'"
+              />
+            </div>
+
+            <div class="field-group">
+              <div class="field-label">
+                <span>Tone</span>
+                <span class="hint">LeadFlow adjusts phrasing for you</span>
+              </div>
+              <select id="tone" class="select">
+                <option value="friendly and casual">Friendly & casual</option>
+                <option value="professional and clean" selected>Professional & clean</option>
+                <option value="direct and bold">Direct & bold</option>
+              </select>
+            </div>
+
+            <button type="submit" class="hero-btn-primary" id="generate-email-btn">
+              Generate cold emails →
+            </button>
+
+            <div class="pill-list">
+              <span class="pill-item" data-preset="Busy local service owners who need more bookings.">
+                Local service owners
+              </span>
+              <span class="pill-item" data-preset="Founders of B2B SaaS products looking to scale demos.">
+                B2B SaaS founders
+              </span>
+              <span class="pill-item" data-preset="Online coaches selling high-ticket programs.">
+                Coaches & consultants
+              </span>
+            </div>
+          </form>
+        </article>
+
+        <!-- Right: Results -->
+        <article class="card">
+          <div class="results-header">
+            <span class="results-title">Email pack preview</span>
+            <span class="results-chip" id="results-chip">No niche yet</span>
+          </div>
+
+          <p class="results-status" id="results-status">
+            Fill in the form on the left and click “Generate cold emails →”.
+          </p>
+
+          <div class="email-list" id="email-results">
+            <!-- Email cards get injected here -->
+          </div>
+
+          <button type="button" class="copy-all-btn" id="copy-all-btn" style="margin-top: 6px; display:none;">
+            Copy all emails
+          </button>
+
+          <div class="panel-badge">
+            <span class="panel-badge-dot"></span>
+            <span>Drafts only — you control what gets sent.</span>
+          </div>
+        </article>
+      </section>
+
+      <footer>
+        <span>© LeadFlow Studio — Cold email, minus the cringe.</span>
+        <span>Pair this with your lead lists, outreach tools, or custom automations.</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("email-form");
+    const nicheInput = document.getElementById("niche");
+    const offerInput = document.getElementById("offer");
+    const goalInput = document.getElementById("goal");
+    const toneSelect = document.getElementById("tone");
+    const statusEl = document.getElementById("results-status");
+    const resultsEl = document.getElementById("email-results");
+    const chipEl = document.getElementById("results-chip");
+    const generateBtn = document.getElementById("generate-email-btn");
+    const copyAllBtn = document.getElementById("copy-all-btn");
+    const presetPills = document.querySelectorAll(".pill-item");
+
+    // Allow quick preset for "offer" by clicking pills
+    presetPills.forEach(pill => {
+      pill.addEventListener("click", () => {
+        const preset = pill.getAttribute("data-preset");
+        if (preset) {
+          nicheInput.value = pill.textContent.trim();
+          offerInput.value = preset;
+        }
+      });
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const niche = (nicheInput.value || "").trim();
+      const offer = (offerInput.value || "").trim();
+      const goal = (goalInput.value || "").trim();
+      const tone = toneSelect.value;
+
+      if (!niche) {
+        alert("Who are you emailing? Add a niche first.");
+        nicheInput.focus();
+        return;
+      }
+
+      statusEl.textContent = "Asking your Cloudflare Worker to draft 2–3 emails…";
+      generateBtn.disabled = true;
+      resultsEl.innerHTML = "";
+      copyAllBtn.style.display = "none";
+
+      const queryString = [
+        `Niche: ${niche}`,
+        offer ? `Offer: ${offer}` : "",
+        goal ? `Goal: ${goal}` : "",
+        tone ? `Tone: ${tone}` : ""
+      ].filter(Boolean).join(" | ");
+
+      try {
+        const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mode: "email",
+            query: queryString
+          })
+        });
+
+        const data = await res.json();
+        const emails = Array.isArray(data.emails) ? data.emails : [];
+
+        chipEl.textContent = niche || "Custom niche";
+        if (!emails.length) {
+          statusEl.textContent = data.error || "No emails returned. Try giving a bit more detail.";
+          return;
+        }
+
+        statusEl.textContent = `Showing ${emails.length} draft emails. Edit before sending.`;
+
+        let allText = "";
+
+        emails.forEach((email, index) => {
+          const subject = email.subject || `Quick idea for your ${niche || "business"}`;
+          const body = email.body || "Hi there,\n\nHere's a simple email draft.\n\n– Your AI";
+
+          allText += `Subject: ${subject}\n\n${body}\n\n---\n\n`;
+
+          const card = document.createElement("article");
+          card.className = "email-card";
+
+          const top = document.createElement("div");
+          top.className = "email-card-top";
+
+          const subjEl = document.createElement("div");
+          subjEl.className = "email-subject";
+          subjEl.textContent = subject;
+
+          const toneEl = document.createElement("span");
+          toneEl.className = "email-pill";
+          toneEl.textContent = tone || "Default tone";
+
+          top.appendChild(subjEl);
+          top.appendChild(toneEl);
+
+          const bodyEl = document.createElement("div");
+          bodyEl.className = "email-body";
+          bodyEl.textContent = body;
+
+          const actions = document.createElement("div");
+          actions.className = "email-actions";
+
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "copy-btn";
+          copyBtn.textContent = "Copy email";
+
+          copyBtn.addEventListener("click", async () => {
+            try {
+              await navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
+              copyBtn.textContent = "Copied!";
+              copyBtn.classList.add("copied");
+              setTimeout(() => {
+                copyBtn.textContent = "Copy email";
+                copyBtn.classList.remove("copied");
+              }, 1500);
+            } catch {
+              alert("Could not copy. Please copy manually.");
+            }
+          });
+
+          actions.appendChild(copyBtn);
+
+          card.appendChild(top);
+          card.appendChild(bodyEl);
+          card.appendChild(actions);
+
+          resultsEl.appendChild(card);
+        });
+
+        // Enable "Copy all" if we got anything back
+        if (allText.trim().length > 0) {
+          copyAllBtn.style.display = "inline-flex";
+          copyAllBtn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(allText.trim());
+              copyAllBtn.textContent = "Copied all!";
+              copyAllBtn.classList.add("copied");
+              setTimeout(() => {
+                copyAllBtn.textContent = "Copy all emails";
+                copyAllBtn.classList.remove("copied");
+              }, 1500);
+            } catch {
+              alert("Could not copy. Please copy manually.");
+            }
+          };
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Something went wrong. Check console or try again.";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+  });
+  </script>
+</body>
+</html>
