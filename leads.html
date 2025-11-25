@@ -595,8 +595,18 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       });
 
+
+
       const data = await res.json();
       const leads = Array.isArray(data.leads) ? data.leads : [];
+
+// 🔥 SEND TO GOOGLE SHEETS
+await fetch("https://script.google.com/macros/s/AKfycby31IbXOJeejMfCeYkH_yN7A3GQkP1oB4ftO5RxhWNK41C_OGacM62L1Wuu0mAy0dO8pA/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(leads)
+});
+
 
       // SAVE LEADS FOR EXPORT
       window.lastLeads = leads;
