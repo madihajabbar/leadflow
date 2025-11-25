@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LeadFlow — AI-Powered Lead Studio</title>
+  <title>LeadFlow — AI Lead Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="LeadFlow is an AI-powered studio that generates hyper-targeted leads in any niche." />
+  <meta name="description" content="AI-powered lead generator for agencies, founders, and operators." />
 
-  <!-- Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
   :root {
@@ -24,7 +23,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: all 0.35s ease-out;
+    transition: all 0.2s ease-out;
   }
 
   body {
@@ -38,12 +37,12 @@
   a { color: inherit; text-decoration: none; }
 
   .page {
-    max-width: 1120px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 32px 20px 80px;
   }
 
-  /* Floating pastel blobs */
+  /* Pastel blobs */
   .blob {
     position: fixed;
     z-index: -1;
@@ -60,7 +59,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
   }
 
   .nav-left { display: flex; align-items: center; gap: 10px; }
@@ -82,12 +81,23 @@
   }
 
   .nav-links {
-    display: flex; align-items: center; gap: 20px;
+    display: flex; align-items: center; gap: 18px;
     font-size: 14px;
   }
 
-  .nav-links span { opacity: 0.7; cursor: pointer; }
-  .nav-links span:hover { opacity: 1; }
+  .nav-links a {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover {
+    opacity: 1;
+  }
+
+  .nav-link-active {
+    opacity: 1 !important;
+    font-weight: 500;
+  }
 
   .nav-cta {
     padding: 9px 16px;
@@ -101,20 +111,25 @@
     backdrop-filter: blur(10px);
   }
 
-  .nav-cta-dot { width: 8px; height: 8px; border-radius: 999px; background: #4ade80; }
-
-  /* Hero */
-  .hero {
-    margin-top: 16px;
-    margin-bottom: 72px;
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2.2fr);
-    gap: 32px;
-    align-items: center;
+  .nav-cta-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: #4ade80;
   }
 
-  @media (max-width: 860px) {
-    .hero { grid-template-columns: 1fr; }
+  /* MAIN LAYOUT */
+  .tool-main {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+    margin-top: 8px;
+  }
+
+  .tool-header {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
   }
 
   .hero-left-tag {
@@ -123,7 +138,7 @@
     background: var(--pill-bg);
     border: 1px solid var(--border-subtle);
     font-size: 11px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .hero-left-tag-pill {
@@ -134,361 +149,427 @@
   }
 
   .hero-title {
-    font-size: clamp(40px, 5vw, 54px);
-    line-height: 1.02;
+    font-size: clamp(32px, 4vw, 40px);
+    line-height: 1.05;
     letter-spacing: -0.04em;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
 
-  .hero-title span.bubble {
+  .hero-title span.highlight {
     background: #fef9c3;
     border-radius: 999px;
-    padding: 4px 14px;
-    font-size: 0.6em;
-    vertical-align: middle;
-    margin-left: 6px;
+    padding: 3px 10px;
+    font-size: 0.7em;
+    margin-left: 4px;
     border: 1px solid rgba(250,204,21,0.4);
   }
 
   .hero-sub {
-    font-size: 15px; max-width: 420px;
-    opacity: 0.8; margin-bottom: 26px;
+    font-size: 14px;
+    max-width: 460px;
+    margin: 0 auto;
+    opacity: 0.8;
+    margin-bottom: 10px;
   }
 
-  .hero-cta-row {
-    display: flex; align-items: center; gap: 12px;
-    flex-wrap: wrap; margin-bottom: 16px;
+  .hero-footnote {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  /* Cards & dashboard */
+  .card {
+    border-radius: 24px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow: var(--shadow-soft);
+    padding: 18px 18px 16px;
+  }
+
+  .card-header-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .card-chip {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-subtext {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+
+  /* Form */
+  .lead-form-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 720px) {
+    .lead-form-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .field-group {
+    margin-bottom: 10px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .field-label span.hint {
+    font-size: 11px;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  .input, .select {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 9px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+  }
+
+  .input:focus, .select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px rgba(79,70,229,0.1);
+  }
+
+  .textarea {
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid rgba(148,163,184,0.5);
+    padding: 9px 12px;
+    font-size: 13px;
+    background: rgba(248,250,252,0.9);
+    outline: none;
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .textarea:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px rgba(79,70,229,0.1);
   }
 
   .hero-btn-primary {
     border-radius: 999px;
-    padding: 11px 20px;
+    padding: 10px 18px;
     background: #111827; color: #f9fafb;
     border: none; font-size: 14px; font-weight: 500;
     cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+    white-space: nowrap;
   }
 
-  .hero-btn-secondary {
-    border-radius: 999px; padding: 10px 18px;
-    background: rgba(255,255,255,0.7);
-    border: 1px solid var(--border-subtle);
-    font-size: 13px; font-weight: 500; cursor: pointer;
+  .hero-btn-primary:disabled {
+    opacity: 0.7;
+    cursor: wait;
   }
 
-  .hero-footnote { font-size: 11px; opacity: 0.7; }
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    margin-top: 10px;
+  }
 
-    /* Hero right — glass panel */
-    .hero-panel {
-      border-radius: var(--radius-xl);
-      background: rgba(255,255,255,0.78);
-      border: 1px solid rgba(148,163,184,0.25);
-      box-shadow: var(--shadow-soft);
-      padding: 20px 20px 18px;
-      position: relative;
-      overflow: hidden;
-    }
+  .pill-item {
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+  }
 
-    .hero-panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      font-size: 12px;
-    }
+  .pill-item:hover {
+    background: #eef2ff;
+  }
 
-    .hero-panel-title {
-      font-weight: 600;
-      font-size: 13px;
-    }
+  /* Results */
+  .results-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
 
-    .hero-panel-chip {
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-    }
+  .results-status {
+    font-size: 11px;
+    opacity: 0.75;
+  }
 
-    .hero-panel-input {
-      border-radius: 18px;
-      background: #f3f4f6;
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      margin-bottom: 14px;
-    }
+  .results-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
 
-    .hero-panel-input span.prompt-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      opacity: 0.6;
-    }
+  .results-controls label {
+    font-size: 11px;
+    opacity: 0.8;
+  }
 
-    .hero-panel-input span.prompt-text {
-      font-size: 12px;
-    }
+  .results-controls .select {
+    width: auto;
+    min-width: 80px;
+  }
 
-    .hero-panel-divider {
-      height: 1px;
-      background: rgba(148,163,184,0.3);
-      margin: 10px 0 12px;
-    }
+  .secondary-btn {
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 11px;
+    border: 1px solid rgba(148,163,184,0.7);
+    background: rgba(255,255,255,0.8);
+    cursor: pointer;
+  }
 
-    .hero-panel-leads {
-      display: grid;
-      grid-template-columns: 1.5fr 1.5fr 1.2fr;
-      gap: 10px;
-      font-size: 11px;
-    }
+  .secondary-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
 
-    .hero-panel-leads-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      opacity: 0.6;
-      margin-bottom: 4px;
-    }
+  .lead-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
 
-    .hero-panel-lead-row {
-      display: contents;
-    }
+  .lead-card {
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid rgba(226,232,240,0.9);
+    box-shadow: 0 12px 28px rgba(148,163,184,0.2);
+    padding: 10px 10px 9px;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
 
-    .hero-panel-lead-cell {
-      padding: 7px 8px;
-      border-radius: 10px;
-      background: #f9fafb;
-      border: 1px solid rgba(226,232,240,0.9);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .lead-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
 
-    .hero-panel-badge {
-      position: absolute;
-      right: 18px;
-      bottom: 18px;
-      font-size: 10px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(17,24,39,0.95);
-      color: white;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+  .lead-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
-    .hero-panel-badge-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #4ade80;
-    }
+  .lead-name {
+    font-weight: 600;
+    font-size: 13px;
+  }
 
-    /* Section wrapper + scroll reveal */
-    section {
-      margin: 80px 0;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
+  .lead-company {
+    font-size: 11px;
+    opacity: 0.8;
+  }
 
-    section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .lead-meta-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
 
-    /* “Studios” grid (like case studies / scroll grid images) */
-    .section-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      opacity: 0.7;
-      margin-bottom: 10px;
-    }
+  .badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.6);
+    background: #f9fafb;
+    white-space: nowrap;
+  }
 
-    .section-title {
-      font-size: 26px;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
+  .badge-budget-high { border-color: #f97316; background: #fff7ed; color: #9a3412; }
+  .badge-budget-medium { border-color: #eab308; background: #fef9c3; color: #854d0e; }
+  .badge-budget-low { border-color: #4b5563; background: #f9fafb; color: #111827; }
 
-    .studio-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
+  .badge-urgency {
+    border-width: 0;
+    color: white;
+  }
+  .urgency-low { background: #16a34a; }
+  .urgency-med { background: #fbbf24; }
+  .urgency-high { background: #dc2626; }
 
-    @media (max-width: 860px) {
-      .studio-grid {
-        grid-template-columns: minmax(0,1fr);
-      }
-    }
+  .lead-inner {
+    border-radius: 14px;
+    background: #f3f4f6;
+    padding: 7px 8px 6px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    font-size: 11px;
+  }
 
-    .studio-card {
-      border-radius: 20px;
-      padding: 16px;
-      background: rgba(255,255,255,0.88);
-      border: 1px solid rgba(226,232,240,0.8);
-      box-shadow: 0 16px 40px rgba(148,163,184,0.22);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+  @media (max-width: 720px) {
+    .lead-inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
 
-    .studio-tag {
-      font-size: 10px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: #eef2ff;
-      color: #4f46e5;
-      width: fit-content;
-    }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
 
-    .studio-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
+  .meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+  }
 
-    .studio-metric {
-      font-size: 11px;
-      opacity: 0.8;
-    }
+  .meta-value {
+    font-size: 11px;
+  }
 
-    .studio-bar {
-      height: 6px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-      margin-top: 6px;
-    }
+  .lead-pain {
+    font-size: 11px;
+    opacity: 0.9;
+    padding: 4px 2px 0;
+  }
 
-    .studio-bar-fill {
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #6366f1, #ec4899);
-      width: var(--value, 60%);
-    }
+  .lead-pain span.label {
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+    margin-right: 4px;
+  }
 
-    /* About / process “sliding section” */
-    .split {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr);
-      gap: 32px;
-      align-items: center;
-    }
+  .lead-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+  }
 
-    @media (max-width: 860px) {
-      .split {
-        grid-template-columns: minmax(0,1fr);
-      }
-    }
+  .lead-email-pill {
+    font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 11px;
+    background: white;
+    padding: 4px 6px;
+    border-radius: 999px;
+    border: 1px dashed rgba(148,163,184,0.7);
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-    .about-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.9);
-      border: 1px solid rgba(226,232,240,0.9);
-      font-size: 11px;
-      margin-bottom: 12px;
-    }
+  .copy-btn, .copy-all-btn {
+    border-radius: 999px;
+    border: none;
+    padding: 5px 10px;
+    font-size: 11px;
+    background: #111827;
+    color: #f9fafb;
+    cursor: pointer;
+  }
 
-    .about-title {
-      font-size: 30px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
+  .copy-btn.copied,
+  .copy-all-btn.copied {
+    background: #22c55e;
+  }
 
-    .about-body {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 20px;
-    }
+  .panel-badge {
+    margin-top: 10px;
+    font-size: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(17,24,39,0.95);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-    .pill-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 11px;
-    }
+  .panel-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #4ade80;
+  }
 
-    .pill-item {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: rgba(255,255,255,0.8);
-    }
-
-    .steps {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      font-size: 13px;
-    }
-
-    .step {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .step-num {
-      width: 20px;
-      height: 20px;
-      border-radius: 999px;
-      background: #111827;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      margin-top: 2px;
-    }
-
-    .step-text {
-      opacity: 0.85;
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 80px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(148,163,184,0.3);
-      font-size: 11px;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      opacity: 0.75;
-    }
+  footer {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(148,163,184,0.3);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0.75;
+  }
   </style>
 </head>
 
 <body>
-  <!-- Pastel floating blobs -->
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
   <div class="blob blob-3"></div>
 
   <div class="page">
-    <!-- NAV -->
     <header class="nav">
       <div class="nav-left">
         <div class="logo-mark">L</div>
         <div class="logo-text">LeadFlow Studio</div>
       </div>
       <div class="nav-links">
-        <span>Product</span>
-        <span>Studios</span>
-        <span>About</span>
-        <span>Pricing</span>
+        <a href="index.html">Home</a>
+        <a href="leads.html" class="nav-link-active">Leads</a>
+        <a href="email.html">Email Writer</a>
+        <a href="outreach.html">Outreach</a>
+        <a href="automation.html">Automation</a>
+        <a href="pricing.html">Pricing</a>
         <button class="nav-cta">
           <span class="nav-cta-dot"></span>
           Book a call
@@ -496,333 +577,423 @@
       </div>
     </header>
 
-    <!-- HERO -->
-    <main class="hero">
-      <div>
+    <main class="tool-main">
+      <!-- Intro -->
+      <section class="tool-header">
         <div class="hero-left-tag">
-          <span class="hero-left-tag-pill">AI Lead Studio</span>
-          <span>Generate hyper-targeted leads in any niche.</span>
+          <span class="hero-left-tag-pill">Lead Tool</span>
+          <span>Generate rich, fictional B2B leads to test your workflows.</span>
         </div>
 
         <h1 class="hero-title">
-          Turn vague markets into
-          <br />
-          <span>verified lead lists</span>
-          <span class="bubble">in seconds</span>
+          AI lead generator
+          <span class="highlight">for any niche</span>
         </h1>
 
         <p class="hero-sub">
-          LeadFlow plugs into your AI agent stack and n8n workflows to create
-          clean, ready-to-contact lead lists for agencies, founders, and solo operators.
+          Describe who you want as a customer — LeadFlow returns structured, fictional leads with company, email, pain
+          points, budget, and urgency. Perfect for prototyping automations without real data.
         </p>
-
-<div class="hero-cta-row">
-  <button class="hero-btn-primary">
-    Generate 5 free leads →
-  </button>
-
-  <!-- NEW: cold email automation -->
-  <button class="hero-btn-secondary js-email-btn">
-    Draft my cold email ✉️
-  </button>
-</div>
-
-<button class="hero-btn-secondary outreach-sequence-btn">
-  Draft my 7-day outreach sequence →
-</button>
 
         <p class="hero-footnote">
-          No credit card • Powered by free OpenRouter models • Built for scrappy deal hunters
+          These leads are realistic but fake. Use them to design, test, and sell your lead systems safely.
         </p>
-      </div>
+      </section>
 
-      <aside class="hero-panel">
-        <div class="hero-panel-header">
-          <span class="hero-panel-title">Lead recipe preview</span>
-          <span class="hero-panel-chip">Niche: Fitness coaches</span>
+      <!-- Inputs card -->
+      <section class="card">
+        <div class="card-header-row">
+          <div class="card-title">Tell LeadFlow who you’re targeting</div>
+        </div>
+        <p class="card-subtext">
+          Be specific. The more detail you give, the sharper the lead profiles will feel.
+        </p>
+
+        <form id="lead-form">
+          <div class="lead-form-grid">
+            <div>
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Niche / segment</span>
+                  <span class="hint">e.g. Toronto med spa owners</span>
+                </div>
+                <input
+                  id="niche"
+                  class="input"
+                  type="text"
+                  placeholder="e.g. founders of DTC skincare brands in the US"
+                />
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Extra context (optional)</span>
+                  <span class="hint">Offer, channel, revenue range, etc.</span>
+                </div>
+                <textarea
+                  id="extra"
+                  class="textarea"
+                  placeholder="e.g. doing $50k–$150k/mo, booked from Instagram, want to reduce no-shows and smooth out revenue."
+                ></textarea>
+              </div>
+            </div>
+
+            <div>
+              <div class="field-group">
+                <div class="field-label">
+                  <span>How many leads?</span>
+                  <span class="hint">Premium mode</span>
+                </div>
+                <select id="lead-count" class="select">
+                  <option value="5" selected>5 leads</option>
+                  <option value="10">10 leads</option>
+                  <option value="20">20 leads</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">
+                  <span>Preset niches</span>
+                  <span class="hint">Click to autofill niche</span>
+                </div>
+                <div class="pill-list">
+                  <span class="pill-item" data-niche="Founders of B2B SaaS tools" data-extra="Selling subscriptions between $50–$300/month, want more demo calls from cold outbound.">
+                    B2B SaaS founders
+                  </span>
+                  <span class="pill-item" data-niche="Local med spa owners" data-extra="Selling facials, injectables, and skin treatments, want more high-ticket bookings.">
+                    Local med spas
+                  </span>
+                  <span class="pill-item" data-niche="Online fitness coaches" data-extra="Selling high-ticket programs via Instagram, want more qualified calls and renewals.">
+                    Online coaches
+                  </span>
+                </div>
+              </div>
+
+              <button type="submit" class="hero-btn-primary" id="generate-btn" style="margin-top: 4px;">
+                Generate leads →
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Results card -->
+      <section class="card">
+        <div class="card-header-row">
+          <div class="card-title">Lead list preview</div>
+          <div class="card-chip" id="chip-niche">No niche selected yet</div>
         </div>
 
-        <div class="hero-panel-input">
-          <div>
-            <span class="prompt-label">Prompt</span><br />
-            <span class="prompt-text">
-              “Give me 5 leads for online fitness coaches in North America looking for more clients…”
-            </span>
-          </div>
-        </div>
-
-        <div class="hero-panel-divider"></div>
-
-        <div class="hero-panel-leads-header">
-          <span>Name</span><span>Company</span><span>Email</span>
-        </div>
-
-        <div class="hero-panel-leads">
-          <div class="hero-panel-lead-cell">Sarah Thompson</div>
-          <div class="hero-panel-lead-cell">PeakForm Coaching</div>
-          <div class="hero-panel-lead-cell">sarah@peakform.co</div>
-
-          <div class="hero-panel-lead-cell">Miguel Rodriguez</div>
-          <div class="hero-panel-lead-cell">StrongMind Fit Lab</div>
-          <div class="hero-panel-lead-cell">miguel@strongmind.fit</div>
-
-          <div class="hero-panel-lead-cell">Aisha Khan</div>
-          <div class="hero-panel-lead-cell">FlowBody Studio</div>
-          <div class="hero-panel-lead-cell">aisha@flowbody.studio</div>
-        </div>
-
-        <div class="hero-panel-badge">
-          <span class="hero-panel-badge-dot"></span>
-          <span>Generated via AI workflow</span>
-        </div>
-      </aside>
-    </main>
-
-    <!-- STUDIOS / “WORK” GRID -->
-    <section id="studios">
-      <p class="section-label">Studios</p>
-      <h2 class="section-title">
-        Built for agencies, solo founders, and scrappy teams.
-      </h2>
-
-      <div class="studio-grid">
-        <article class="studio-card">
-          <span class="studio-tag">B2B SaaS</span>
-          <h3 class="studio-title">LinkedIn outbound studio</h3>
-          <p class="studio-metric">Fill your pipeline with ICP founders & growth leaders.</p>
-          <div class="studio-bar" style="--value: 82%;">
-            <div class="studio-bar-fill"></div>
-          </div>
-        </article>
-
-        <article class="studio-card">
-          <span class="studio-tag">Local services</span>
-          <h3 class="studio-title">Local business expansion</h3>
-          <p class="studio-metric">Generate owners of salons, gyms, clinics in any city.</p>
-          <div class="studio-bar" style="--value: 68%;">
-            <div class="studio-bar-fill"></div>
-          </div>
-        </article>
-
-        <article class="studio-card">
-          <span class="studio-tag">Creators & consultants</span>
-          <h3 class="studio-title">High-ticket client radar</h3>
-          <p class="studio-metric">Identify warm prospects for coaching, cohorts, or retainers.</p>
-          <div class="studio-bar" style="--value: 74%;">
-            <div class="studio-bar-fill"></div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- ABOUT / PROCESS (SLIDING SECTION) -->
-    <section id="about">
-      <div class="split">
-        <div>
-          <div class="about-pill">
-            <span>About LeadFlow</span> · <span>Built on agents & n8n</span>
-          </div>
-          <h2 class="about-title">
-            Not another “lead list” scraper.<br />A controllable AI lead studio.
-          </h2>
-          <p class="about-body">
-            Instead of renting random lists, LeadFlow lets you own a reusable workflow:
-            describe your niche once, and your AI stack keeps generating fresh, contextual leads
-            every time you hit “run”.
+        <div class="results-top-row">
+          <p class="results-status" id="results-status">
+            Fill in the form above and click “Generate leads →”.
           </p>
-          <div class="pill-list">
-            <span class="pill-item">Free OpenRouter models</span>
-            <span class="pill-item">n8n-native workflows</span>
-            <span class="pill-item">One-click export</span>
-            <span class="pill-item">JSON, CSV, & Sheets</span>
-            <span class="pill-item">Cold email ready</span>
+          <div class="results-controls">
+            <label for="lead-count-view">Count</label>
+            <select id="lead-count-view" class="select" disabled>
+              <option>—</option>
+            </select>
+            <button type="button" class="secondary-btn" id="regen-btn" disabled>
+              Regenerate →
+            </button>
           </div>
         </div>
 
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-text">
-              <strong>Describe your niche.</strong>  
-              “Toronto med spas doing >$50k/month”, “ecom brands spending on TikTok ads”, or
-              “personal trainers selling online programs”.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-text">
-              <strong>Run your LeadFlow workflow.</strong>  
-              Behind the scenes, your n8n + OpenRouter stack generates clean, structured JSON lead lists.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-text">
-              <strong>Export & outreach.</strong>  
-              Send leads into Sheets, Notion, or your CRM — then plug into your cold email / DM system.
-            </div>
-          </div>
+        <div class="lead-list" id="lead-results">
+          <!-- Lead cards injected here -->
         </div>
-      </div>
-    </section>
 
-    <!-- CTA / FOOTER -->
-    <section id="cta">
-      <div class="hero-panel" style="margin-top: 20px;">
-        <div class="hero-panel-header">
-          <span class="hero-panel-title">Ready to plug in your first niche?</span>
-          <span class="hero-panel-chip">Start with 5 free leads</span>
-        </div>
-        <p style="font-size:13px; opacity:0.8; margin-bottom:12px;">
-          Send a single sentence about who you want as a customer. LeadFlow will turn it into a lead recipe your
-          workflow can run on repeat.
-        </p>
-        <button class="hero-btn-primary">
-          Get my first 5 leads →
+        <button type="button" class="copy-all-btn" id="copy-all-btn" style="margin-top: 8px; display:none;">
+          Copy all leads
         </button>
-      </div>
-    </section>
 
-    <footer>
-      <span>© LeadFlow Studio — Built by you, powered by free AI.</span>
-      <span>Made for agencies, solo founders, & scrappy operators.</span>
-    </footer>
+        <div class="panel-badge">
+          <span class="panel-badge-dot"></span>
+          <span>Generated via your Cloudflare + OpenRouter stack.</span>
+        </div>
+      </section>
+
+      <footer>
+        <span>© LeadFlow Studio — Lead data, without touching real inboxes.</span>
+        <span>Use these profiles to demo your automations to clients.</span>
+      </footer>
+    </main>
   </div>
 
-  <!-- Scroll reveal for sections -->
   <script>
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.18 }
-    );
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("lead-form");
+    const nicheInput = document.getElementById("niche");
+    const extraInput = document.getElementById("extra");
+    const countSelect = document.getElementById("lead-count");
 
-    document.querySelectorAll("section").forEach((section) => {
-      observer.observe(section);
+    const statusEl = document.getElementById("results-status");
+    const resultsEl = document.getElementById("lead-results");
+    const chipNicheEl = document.getElementById("chip-niche");
+    const generateBtn = document.getElementById("generate-btn");
+    const copyAllBtn = document.getElementById("copy-all-btn");
+    const regenBtn = document.getElementById("regen-btn");
+    const countView = document.getElementById("lead-count-view");
+
+    const presetPills = document.querySelectorAll(".pill-item");
+
+    let lastPayload = null;
+    let lastLeads = [];
+
+    // Preset click
+    presetPills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const niche = pill.getAttribute("data-niche") || pill.textContent.trim();
+        const extra = pill.getAttribute("data-extra") || "";
+        nicheInput.value = niche;
+        extraInput.value = extra;
+      });
     });
-  </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll(".hero-btn-primary");
 
-  buttons.forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const query = "Generate 5 leads for fitness coaches";
-
-     const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    mode: "leads",
-    query
-  })
-});
-
-
-      let data;
-      try {
-        data = await res.json();
-      } catch (e) {
-        console.error("Invalid JSON from Worker:", e);
-        alert("Your Worker returned invalid JSON");
-        return;
-      }
-
-      console.log("LEADS:", data);
-
-      // 🔥 REPLACE the preview UI with REAL data
-      const cells = document.querySelectorAll(".hero-panel-lead-cell");
-      const leads = data.leads;
-
-      for (let i = 0; i < cells.length; i++) {
-        const lead = leads[i] || { name: "-", company: "-", email: "-" };
-        const col = i % 3;
-
-        if (col === 0) cells[i].textContent = lead.name;
-        if (col === 1) cells[i].textContent = lead.company;
-        if (col === 2) cells[i].textContent = lead.email;
-      }
-
-      alert("Leads updated!");
-    });
-  });
-});
-</script>
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  const emailButtons = document.querySelectorAll(".js-email-btn");
-
-  emailButtons.forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const query = prompt(
-        "Who do you want to email? (e.g. 'Toronto med spa owners', 'fitness coaches in LA')"
-      );
-
-      if (!query) return; // user cancelled
-
-      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    mode: "email",
-    query
-  })
-});
-
-      let data;
-      try {
-        data = await res.json();
-      } catch (e) {
-        console.error("Invalid JSON from Worker (email mode):", e);
-        alert("Worker error while generating email.");
-        return;
-      }
-
-      console.log("EMAIL DRAFTS:", data.emails || data);
-
-      alert("Cold email drafts generated! Open the console to see them.");
-      // Later we can show them nicely in the UI instead of console.
-    });
-  });
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const seqBtn = document.querySelector(".outreach-sequence-btn");
-
-  seqBtn.addEventListener("click", async () => {
-    const niche = prompt("Who are you trying to outreach to? (e.g., med spa owners in Toronto)");
-
-    if (!niche) return alert("Please enter a niche.");
-
-    try {
-const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    mode: "outreach",
-    query: niche
-  })
-});
-
-      const data = await res.json();
-
-      console.log("OUTREACH SEQUENCE:", data);
-
-      alert("7-day sequence generated! Check console.");
-
-    } catch (err) {
-      console.error(err);
-      alert("Error generating sequence.");
+    function mapUrgency(urgencyScore) {
+      const score = parseInt(urgencyScore, 10);
+      if (!score || score <= 2) return { label: `${score || 1}/5 urgency`, cls: "urgency-low" };
+      if (score === 3) return { label: "3/5 urgency", cls: "urgency-med" };
+      return { label: `${score}/5 urgency`, cls: "urgency-high" };
     }
-  });
-});
-</script>
 
+    function mapBudget(budgetRaw) {
+      const val = (budgetRaw || "").toString().toLowerCase();
+      if (val.includes("high")) return { label: "Budget: High", cls: "badge-budget-high" };
+      if (val.includes("low")) return { label: "Budget: Low", cls: "badge-budget-low" };
+      return { label: "Budget: Medium", cls: "badge-budget-medium" };
+    }
+
+    async function fetchLeads(payload) {
+      statusEl.textContent = "Talking to your Cloudflare Worker…";
+      generateBtn.disabled = true;
+      regenBtn.disabled = true;
+      copyAllBtn.style.display = "none";
+      resultsEl.innerHTML = "";
+
+      try {
+        const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        const leads = Array.isArray(data.leads) ? data.leads : [];
+
+        lastLeads = leads;
+
+        const requestedCount = payload.count || 5;
+        chipNicheEl.textContent = payload.niche || "Custom niche";
+        countView.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.textContent = `${Math.min(leads.length, requestedCount)} leads`;
+        countView.appendChild(opt);
+        countView.disabled = false;
+
+        if (!leads.length) {
+          statusEl.textContent = data.error || "No leads returned. Try adding more context to your niche.";
+          return;
+        }
+
+        statusEl.textContent = `Showing ${Math.min(leads.length, requestedCount)} fictional leads. Fields are designed to plug into CRMs, Sheets, or automations.`;
+
+        let allText = "";
+
+        leads.slice(0, requestedCount).forEach((lead, index) => {
+          const name = lead.name || `Lead ${index + 1}`;
+          const company = lead.company || "Company TBD";
+          const email = lead.email || "no-email@example.com";
+          const industry = lead.industry || "General";
+          const companySize = lead.company_size || "Size TBD";
+          const location = lead.location || "Location TBD";
+          const pain = lead.pain_point || "Looking for more predictable, scalable growth.";
+          const budgetInfo = mapBudget(lead.budget_level);
+          const urgencyInfo = mapUrgency(lead.urgency_score);
+
+          const card = document.createElement("article");
+          card.className = "lead-card";
+
+          const header = document.createElement("div");
+          header.className = "lead-card-header";
+
+          const main = document.createElement("div");
+          main.className = "lead-main";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "lead-name";
+          nameEl.textContent = name;
+
+          const companyEl = document.createElement("div");
+          companyEl.className = "lead-company";
+          companyEl.textContent = `${company} · ${industry}`;
+
+          main.appendChild(nameEl);
+          main.appendChild(companyEl);
+
+          const badges = document.createElement("div");
+          badges.className = "lead-meta-badges";
+
+          const budgetBadge = document.createElement("div");
+          budgetBadge.className = `badge ${budgetInfo.cls}`;
+          budgetBadge.textContent = budgetInfo.label;
+
+          const urgencyBadge = document.createElement("div");
+          urgencyBadge.className = `badge badge-urgency ${urgencyInfo.cls}`;
+          urgencyBadge.textContent = urgencyInfo.label;
+
+          badges.appendChild(budgetBadge);
+          badges.appendChild(urgencyBadge);
+
+          header.appendChild(main);
+          header.appendChild(badges);
+
+          const inner = document.createElement("div");
+          inner.className = "lead-inner";
+
+          const meta1 = document.createElement("div");
+          meta1.className = "meta-item";
+          meta1.innerHTML = `<div class="meta-label">Location</div><div class="meta-value">${location}</div>`;
+
+          const meta2 = document.createElement("div");
+          meta2.className = "meta-item";
+          meta2.innerHTML = `<div class="meta-label">Company size</div><div class="meta-value">${companySize}</div>`;
+
+          const meta3 = document.createElement("div");
+          meta3.className = "meta-item";
+          meta3.innerHTML = `<div class="meta-label">Industry</div><div class="meta-value">${industry}</div>`;
+
+          inner.appendChild(meta1);
+          inner.appendChild(meta2);
+          inner.appendChild(meta3);
+
+          const painEl = document.createElement("div");
+          painEl.className = "lead-pain";
+          painEl.innerHTML = `<span class="label">Pain</span>${pain}`;
+
+          const footer = document.createElement("div");
+          footer.className = "lead-footer";
+
+          const emailPill = document.createElement("div");
+          emailPill.className = "lead-email-pill";
+          emailPill.textContent = email;
+
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "copy-btn";
+          copyBtn.textContent = "Copy lead";
+
+          copyBtn.addEventListener("click", async () => {
+            const text = [
+              `Name: ${name}`,
+              `Company: ${company}`,
+              `Email: ${email}`,
+              `Industry: ${industry}`,
+              `Company size: ${companySize}`,
+              `Location: ${location}`,
+              `Budget: ${budgetInfo.label}`,
+              `Urgency: ${urgencyInfo.label}`,
+              `Pain point: ${pain}`,
+            ].join("\n");
+
+            try {
+              await navigator.clipboard.writeText(text);
+              copyBtn.textContent = "Copied!";
+              copyBtn.classList.add("copied");
+              setTimeout(() => {
+                copyBtn.textContent = "Copy lead";
+                copyBtn.classList.remove("copied");
+              }, 1500);
+            } catch {
+              alert("Could not copy. Please copy manually.");
+            }
+          });
+
+          footer.appendChild(emailPill);
+          footer.appendChild(copyBtn);
+
+          card.appendChild(header);
+          card.appendChild(inner);
+          card.appendChild(painEl);
+          card.appendChild(footer);
+
+          resultsEl.appendChild(card);
+
+          allText += [
+            `Lead ${index + 1}`,
+            `Name: ${name}`,
+            `Company: ${company}`,
+            `Email: ${email}`,
+            `Industry: ${industry}`,
+            `Company size: ${companySize}`,
+            `Location: ${location}`,
+            `Budget: ${budgetInfo.label}`,
+            `Urgency: ${urgencyInfo.label}`,
+            `Pain point: ${pain}`,
+            "",
+          ].join("\n");
+        });
+
+        if (allText.trim().length > 0) {
+          copyAllBtn.style.display = "inline-flex";
+          copyAllBtn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(allText.trim());
+              copyAllBtn.textContent = "Copied all!";
+              copyAllBtn.classList.add("copied");
+              setTimeout(() => {
+                copyAllBtn.textContent = "Copy all leads";
+                copyAllBtn.classList.remove("copied");
+              }, 1500);
+            } catch {
+              alert("Could not copy. Please copy manually.");
+            }
+          };
+        }
+
+        regenBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Something went wrong. Check your Worker or try again.";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const niche = (nicheInput.value || "").trim();
+      const extra = (extraInput.value || "").trim();
+      const count = parseInt(countSelect.value, 10) || 5;
+
+      if (!niche) {
+        alert("Tell LeadFlow who you want as a customer first.");
+        nicheInput.focus();
+        return;
+      }
+
+      const queryParts = [
+        `Niche: ${niche}`,
+        extra ? `Extra context: ${extra}` : "",
+        `Requested lead count: ${count}`,
+      ].filter(Boolean);
+
+      const payload = {
+        mode: "leads",
+        query: queryParts.join(" | "),
+        count,     // optional — for future backend upgrades
+        niche,     // for UI
+      };
+
+      lastPayload = payload;
+      await fetchLeads(payload);
+    });
+
+    regenBtn.addEventListener("click", async () => {
+      if (!lastPayload) return;
+      await fetchLeads(lastPayload);
+    });
+  });
+  </script>
 </body>
 </html>
