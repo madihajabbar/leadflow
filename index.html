@@ -714,11 +714,15 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", async () => {
       const query = "Generate 5 leads for fitness coaches";
 
-      const res = await fetch("http://localhost:5678/webhook/leadflow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-      });
+     const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    mode: "leads",
+    query
+  })
+});
+
 
       let data;
       try {
@@ -761,11 +765,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (!query) return; // user cancelled
 
-      const res = await fetch("http://localhost:5678/webhook-test/leadflow-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "email", query })
-      });
+      const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    mode: "email",
+    query
+  })
+});
 
       let data;
       try {
@@ -794,11 +801,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!niche) return alert("Please enter a niche.");
 
     try {
-      const res = await fetch("http://localhost:5678/webhook-test/leadflow-outreach", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ niche })
-      });
+const res = await fetch("https://leadflow-api.madihajabbar147.workers.dev", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    mode: "outreach",
+    query: niche
+  })
+});
 
       const data = await res.json();
 
