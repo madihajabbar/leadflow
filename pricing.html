@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LeadFlow — Pricing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Simple pricing for AI-powered lead generation and outreach systems." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+  :root {
+    --bg-gradient: radial-gradient(circle at top left, #ffe6f7 0, #f9f5ff 35%, #e2f2ff 70%, #fff 100%);
+    --accent: #111827;
+    --accent-soft: #e5edff;
+    --pill-bg: rgba(255,255,255,0.7);
+    --border-subtle: rgba(15,23,42,0.06);
+    --shadow-soft: 0 24px 60px rgba(15,23,42,0.08);
+    --radius-xl: 32px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: all 0.2s ease-out;
+  }
+
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg-gradient);
+    color: #0f172a;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* Pastel blobs */
+  .blob {
+    position: fixed;
+    z-index: -1;
+    filter: blur(40px);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .blob-1 { width: 260px; height: 260px; border-radius: 999px; background: #ffd6e8; top: -40px; left: -40px; }
+  .blob-2 { width: 260px; height: 260px; border-radius: 999px; background: #dbeafe; top: 40%; right: -80px; }
+  .blob-3 { width: 220px; height: 220px; border-radius: 999px; background: #fef9c3; bottom: -60px; left: 10%; }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .nav-left { display: flex; align-items: center; gap: 10px; }
+
+  .logo-mark {
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, #ffffff 0, #a5b4fc 35%, #f472b6 80%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 30px rgba(148,163,184,0.6);
+    font-size: 16px; color: white; font-weight: 700;
+  }
+
+  .logo-text {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    font-size: 15px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 18px;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover {
+    opacity: 1;
+  }
+
+  .nav-link-active {
+    opacity: 1 !important;
+    font-weight: 500;
+  }
+
+  .nav-cta {
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(15,23,42,0.08);
+    background: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-cta-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: #4ade80;
+  }
+
+  /* MAIN LAYOUT */
+  .tool-main {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    align-items: stretch;
+    margin-top: 8px;
+  }
+
+  .tool-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .hero-left-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--pill-bg);
+    border: 1px solid var(--border-subtle);
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .hero-left-tag-pill {
+    background: #111827; color: white;
+    border-radius: 999px;
+    padding: 2px 8px; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .hero-title {
+    font-size: clamp(32px, 4vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+  }
+
+  .hero-title span.highlight {
+    background: #fef9c3;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.7em;
+    margin-left: 4px;
+    border: 1px solid rgba(250,204,21,0.4);
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    max-width: 480px;
+    margin: 0 auto;
+    opacity: 0.8;
+    margin-bottom: 10px;
+  }
+
+  .hero-footnote {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  /* Pricing cards */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  @media (max-width: 960px) {
+    .pricing-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .pricing-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .plan-card {
+    border-radius: 24px;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow: var(--shadow-soft);
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .plan-card.featured {
+    border-color: #4f46e5;
+    box-shadow: 0 26px 60px rgba(79,70,229,0.28);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-size: 10px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #111827;
+    color: #f9fafb;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .plan-name {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.8;
+  }
+
+  .plan-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .plan-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .plan-price {
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  .plan-suffix {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .plan-note {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+
+  .plan-divider {
+    border-top: 1px solid rgba(148,163,184,0.3);
+    margin: 8px 0;
+  }
+
+  .plan-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .plan-list li {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .plan-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .plan-dot span {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #22c55e;
+  }
+
+  .plan-cta {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    border-radius: 999px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(148,163,184,0.7);
+    background: rgba(255,255,255,0.9);
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .plan-cta-primary {
+    background: #111827;
+    color: #f9fafb;
+    border-color: #111827;
+  }
+
+  .plan-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(15,23,42,0.18);
+  }
+
+  /* FAQ */
+  .faq-section {
+    margin-top: 10px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow: var(--shadow-soft);
+    padding: 18px 18px 18px;
+  }
+
+  .faq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .faq-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .faq-pill {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .faq-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .faq-item-question {
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .faq-item-answer {
+    opacity: 0.8;
+  }
+
+  footer {
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(148,163,184,0.3);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    opacity: 0.75;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="page">
+    <header class="nav">
+      <div class="nav-left">
+        <div class="logo-mark">L</div>
+        <div class="logo-text">LeadFlow Studio</div>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="leads.html">Leads</a>
+        <a href="email.html">Email Writer</a>
+        <a href="outreach.html">Outreach</a>
+        <a href="automation.html">Automation</a>
+        <a href="pricing.html" class="nav-link-active">Pricing</a>
+        <button class="nav-cta">
+          <span class="nav-cta-dot"></span>
+          Book a call
+        </button>
+      </div>
+    </header>
+
+    <main class="tool-main">
+      <!-- Intro -->
+      <section class="tool-header">
+        <div class="hero-left-tag">
+          <span class="hero-left-tag-pill">Pricing</span>
+          <span>Use the tools for free, hire the studio when you’re ready.</span>
+        </div>
+
+        <h1 class="hero-title">
+          Simple pricing
+          <span class="highlight">for outbound systems</span>
+        </h1>
+
+        <p class="hero-sub">
+          LeadFlow gives you a sandbox of AI tools to design your own lead, email, and outreach flows. When you’re ready
+          to plug everything into your real stack, you can hire the studio to build it for you.
+        </p>
+
+        <p class="hero-footnote">
+          Tools stay free while in beta. Service packages below are for agencies, founders, and operators who want it
+          done-for-them.
+        </p>
+      </section>
+
+      <!-- Pricing grid -->
+      <section class="pricing-grid">
+        <!-- Plan 1: Builder -->
+        <article class="plan-card">
+          <div class="plan-name">For solo builders</div>
+          <div class="plan-title">LeadFlow Sandbox</div>
+
+          <div class="plan-price-row">
+            <div class="plan-price">$0</div>
+            <div class="plan-suffix">/mo • beta</div>
+          </div>
+          <div class="plan-note">
+            Use the tools for free while LeadFlow is in beta. No credit card, no trials.
+          </div>
+
+          <div class="plan-divider"></div>
+
+          <ul class="plan-list">
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>AI lead generator (fictional leads for testing)</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>AI cold email writer with multiple angles</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>AI multi-channel outreach sequences (email, DMs, SMS draft)</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Manual copy + export (CSV / JSON coming soon)</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Perfect for prototyping offers and workflows without real data</div>
+            </li>
+          </ul>
+
+          <a href="index.html" class="plan-cta plan-cta-primary">
+            Start in the sandbox →
+          </a>
+        </article>
+
+        <!-- Plan 2: Automation Setup -->
+        <article class="plan-card featured">
+          <div class="plan-badge">Most popular</div>
+
+          <div class="plan-name">For growing teams</div>
+          <div class="plan-title">Automation Setup</div>
+
+          <div class="plan-price-row">
+            <div class="plan-price">$497+</div>
+            <div class="plan-suffix">one-time project</div>
+          </div>
+          <div class="plan-note">
+            You bring the offer and niche. LeadFlow designs and wires a simple outbound system around it.
+          </div>
+
+          <div class="plan-divider"></div>
+
+          <ul class="plan-list">
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Deep dive on your offer, ICP, and current funnel</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>1 AI-assisted lead playbook (who to target, where, and how)</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>1 done-for-you cold email + DM sequence tailored to your offer</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Basic workflow setup (e.g. Google Sheets + email sending tool)</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Light reporting view so you can see replies and bookings</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Delivered as a clear “playbook” you can reuse or hand to your team</div>
+            </li>
+          </ul>
+
+          <a href="#" class="plan-cta plan-cta-primary">
+            Book an automation call →
+          </a>
+        </article>
+
+        <!-- Plan 3: Studio Retainer -->
+        <article class="plan-card">
+          <div class="plan-name">For agencies & studios</div>
+          <div class="plan-title">LeadFlow Studio</div>
+
+          <div class="plan-price-row">
+            <div class="plan-price">$1,200+</div>
+            <div class="plan-suffix">/mo • limited spots</div>
+          </div>
+          <div class="plan-note">
+            Ongoing support for agencies and operators who want a dedicated partner for outbound systems.
+          </div>
+
+          <div class="plan-divider"></div>
+
+          <ul class="plan-list">
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Everything in Automation Setup, plus monthly optimization</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Multiple offers / campaigns built and iterated over time</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Ongoing copy testing (subject lines, hooks, angles)</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Quarterly “system review” with new workflows or tools added</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Support for agencies running outbound for their own clients</div>
+            </li>
+            <li>
+              <div class="plan-dot"><span></span></div>
+              <div>Custom data exports or dashboards on request</div>
+            </li>
+          </ul>
+
+          <a href="#" class="plan-cta">
+            Join the studio waitlist →
+          </a>
+        </article>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq-section">
+        <div class="faq-header">
+          <div class="faq-title">Questions about pricing</div>
+          <div class="faq-pill">Quick FAQ</div>
+        </div>
+
+        <ul class="faq-list">
+          <li>
+            <div class="faq-item-question">Is LeadFlow really free to use?</div>
+            <div class="faq-item-answer">
+              Yes — the tools (lead generator, email writer, outreach builder) are free to use while LeadFlow is in beta.
+              You can explore, test, and screenshot flows without paying.
+            </div>
+          </li>
+
+          <li>
+            <div class="faq-item-question">What do the paid packages actually include?</div>
+            <div class="faq-item-answer">
+              Paid packages are service offers — not software. You’re hiring the studio to take what LeadFlow generates
+              and turn it into a real, usable system inside your tools (Sheets, CRMs, email sender, etc.).
+            </div>
+          </li>
+
+          <li>
+            <div class="faq-item-question">Do you work with small businesses or only tech companies?</div>
+            <div class="faq-item-answer">
+              Both. LeadFlow is designed for agencies, online coaches, local service businesses, and SaaS founders who
+              want more structured outbound without building a huge team.
+            </div>
+          </li>
+
+          <li>
+            <div class="faq-item-question">I’m not ready for a full build. Where should I start?</div>
+            <div class="faq-item-answer">
+              Start with the sandbox plan. Use the tools to clarify your niche, offer, and messaging. When you’re ready,
+              you can book an Automation Setup project and ship a lean version of your outbound system.
+            </div>
+          </li>
+
+          <li>
+            <div class="faq-item-question">Can pricing be customized for my situation?</div>
+            <div class="faq-item-answer">
+              Yes. The numbers above are starting points. If you have multiple brands, complex funnels, or very specific
+              constraints, you can discuss a custom scope on a call.
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <footer>
+        <span>© LeadFlow Studio — Simple pricing for serious outbound systems.</span>
+        <span>Use the tools for free. Hire the studio when you’re ready to go live.</span>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
