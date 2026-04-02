@@ -422,17 +422,74 @@
     .phase-body { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; }
 
     /* ══════════════════════════════════════════════
-       CTA
+/* ══════════════════════════════════════════════
+       CTA (Glowing Card Design)
     ══════════════════════════════════════════════ */
-    #cta { text-align: center; padding: 160px 0; }
-    #cta h2 {
-      font-size: clamp(52px, 8vw, 100px);
-      font-weight: 200;
-      letter-spacing: -4px;
-      line-height: .96;
+    #cta { padding: 140px 0; }
+    
+    .cta-card {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 40px;
+      z-index: 1;
     }
-    #cta .sub { font-size: 17px; color: var(--muted); margin: 24px auto 48px; max-width: 480px; line-height: 1.7; }
+    
+    /* The soft blurred glow behind the card */
+    .cta-card::before {
+      content: "";
+      position: absolute;
+      inset: -4px; 
+      border-radius: 42px;
+      background: linear-gradient(115deg, #f9ce34, #ee2a7b, #6228d7, #00d2ff);
+      background-size: 300% 300%;
+      animation: ctaGradient 6s ease alternate infinite;
+      filter: blur(14px); 
+      z-index: -1;
+      opacity: 0.8;
+    }
 
+    /* The crisp animated border line */
+    .cta-card::after {
+      content: "";
+      position: absolute;
+      inset: -2px; 
+      border-radius: 42px;
+      background: linear-gradient(115deg, #f9ce34, #ee2a7b, #6228d7, #00d2ff);
+      background-size: 300% 300%;
+      animation: ctaGradient 6s ease alternate infinite;
+      z-index: -1;
+    }
+
+    @keyframes ctaGradient {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .cta-content {
+      background: #050505; /* Deep black */
+      border-radius: 40px;
+      padding: 80px 40px;
+      text-align: center;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .cta-content h2 {
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 300;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .cta-content .sub {
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0 auto 40px;
+      max-width: 480px;
+      line-height: 1.7;
+    }
     /* ══════════════════════════════════════════════
        FOOTER
     ══════════════════════════════════════════════ */
@@ -713,11 +770,15 @@
     </div>
   </section>
 
-  <section id="cta">
+<section id="cta">
     <div class="container reveal up">
-      <h2>Ready to <br>Scale?</h2>
-      <p class="sub">Stop losing leads to wait times. Start qualifying and booking automatically.</p>
-      <a href="booking.html" class="btn-cta" style="padding: 16px 36px; font-size: 16px; border-radius: 12px;">Book an Intro</a>
+      <div class="cta-card">
+        <div class="cta-content">
+          <h2>Ready to Scale?</h2>
+          <p class="sub">Stop losing leads to wait times. Start qualifying and booking automatically.</p>
+          <a href="booking.html" class="btn-hero-primary">Book an Intro</a>
+        </div>
+      </div>
     </div>
   </section>
 
