@@ -40,16 +40,19 @@
     .d1{transition-delay:.07s}.d2{transition-delay:.15s}.d3{transition-delay:.23s}
     .d4{transition-delay:.31s}.d5{transition-delay:.39s}.d6{transition-delay:.47s}
 
-    /* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════
        NAV (Transparent and Rounded)
     ══════════════════════════════════════════════ */
     nav {
-      position: sticky;
+      position: fixed; /* Changed to fixed so it floats over the hero, removing the white gap */
       top: 16px;
-      z-index: 200;
+      left: 0;
+      width: 100%;
+      z-index: 999;
       display: flex;
       justify-content: center;
       padding: 0 20px;
+      background: transparent !important; /* Kills any leftover background bar */
       pointer-events: none;
     }
     .nav-pill {
@@ -72,14 +75,34 @@
       from { opacity: 0; transform: translateY(-16px); }
       to   { opacity: 1; transform: none; }
     }
-    .nav-logo img { height: 26px; width: auto; display: block; }
+    .nav-logo img { 
+      height: 26px; 
+      width: auto; 
+      display: block; 
+      filter: brightness(0); /* Forces your logo to be black so it's visible on the white pill */
+    }
     .nav-links { display: flex; gap: 6px; list-style: none; }
     .nav-links a {
-      font-size: 14px; font-weight: 600; color: #111;
-      padding: 7px 16px; border-radius: 100px;
+      font-size: 14px; 
+      font-weight: 700; 
+      color: #000000 !important; /* Forces the text to be black */
+      padding: 7px 16px; 
+      border-radius: 100px;
       transition: background .2s;
     }
     .nav-links a:hover { background: rgba(0,0,0,0.05); }
+    
+    /* 3D, Smaller & Squarer Buttons */
+    .btn-cta {
+      background: #000; color: #fff;
+      padding: 10px 20px; border-radius: 10px;
+      font-weight: 700; font-size: 13px;
+      transition: transform .2s, box-shadow .2s;
+      display: inline-flex; align-items: center; gap: 7px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    }
+    .btn-cta:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+    .btn-cta:active { transform: scale(0.98); }
     
     /* 3D, Smaller & Squarer Buttons */
     .btn-cta {
