@@ -104,7 +104,7 @@
     .btn-cta:hover { transform: scale(1.04); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
     .btn-cta:active { transform: scale(0.98); }
 
-/* ══════════════════════════════════════════════
+    /* ══════════════════════════════════════════════
        HERO — dark with grid + blobs + grain
     ══════════════════════════════════════════════ */
     #hero {
@@ -119,11 +119,11 @@
       background-color: #040714;
       /* Subtle high-tech grid */
       background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
       background-size: 50px 50px;
       color: var(--hero-text);
-      padding-top: 100px; /* Keeps text out from under the nav */
+      padding-top: 100px;
       padding-bottom: 40px; 
     }
 
@@ -132,7 +132,6 @@
       top: 0; left: 0; right: 0; bottom: 0;
       z-index: 1; 
       pointer-events: none;
-      /* Fixed for browser glitches: replaced 'transparent' with 'rgba(..., 0)' */
       background:
         radial-gradient(circle at 15% 50%, rgba(60,100,240,0.35) 0%, rgba(60,100,240,0) 50%),
         radial-gradient(circle at 80% 20%, rgba(160,60,220,0.30) 0%, rgba(160,60,220,0) 45%),
@@ -148,6 +147,7 @@
     .hero-content {
       position: relative; z-index: 10;
       padding: 0 20px;
+      margin-top: 100px; /* This explicitly pushes the text out from under the nav */
       animation: heroIn .9s cubic-bezier(.16,1,.3,1) .2s both;
     }
     @keyframes heroIn {
@@ -232,7 +232,7 @@
       display: flex; align-items: center; gap: 10px;
     }
     .float-tag svg { flex-shrink: 0; }
-    .float-tag-1 { top: 18%; right: 12%; animation: tagFloat1 7s ease-in-out infinite; }
+    .float-tag-1 { top: 24%; right: 12%; animation: tagFloat1 7s ease-in-out infinite; }
     .float-tag-2 { top: 42%; left:  8%; animation: tagFloat2 9s ease-in-out infinite; }
     .float-tag-3 { bottom: 16%; right: 18%; animation: tagFloat3 8s ease-in-out infinite; }
 
